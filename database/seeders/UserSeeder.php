@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         User::create([
             'first_name'=>'aaa',
             'last_name'=>'aaa',
+            'role'=>'OWNER',
             'responsibility'=>'aaa',
             'address'=>'aaa',
             'phone_number'=>'55555555',

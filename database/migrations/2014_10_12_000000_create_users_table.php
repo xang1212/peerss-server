@@ -17,10 +17,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('first_name',100);
             $table->string('last_name',100);
-            $table->enum('gender',['male','female'],50)->default('male');
-            $table->enum('role',['owner','staff','customer'],50)->default('customer');
+            $table->enum('gender',['MALE','FEMALE'],50)->default('MALE');
+            $table->enum('role',['OWNER','EMPLOYEE','CUSTOMER'],50)->default('CUSTOMER');
             $table->string('responsibility',255);
-            $table->enum('status',['active','inactive'],50)->default('active');
+            $table->enum('status',['ACTIVE','INACTIVE'],50)->default('ACTIVE');
             $table->string('address',255);
             $table->string('phone_number',20);
             $table->string('profile_image',255)->nullable();
