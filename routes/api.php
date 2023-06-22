@@ -19,6 +19,6 @@ Route::post('/register',[UserController::class,'register']);
 Route::group(['middleware'=>['auth:sanctum']], function () {
 
     Route::post('/logout',[UserController::class,'logout']);
-
+    Route::put('/user/{id}',[UserController::class,'update']);
     
 });

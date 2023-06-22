@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('responsibility',255);
             $table->enum('status',['ACTIVE','INACTIVE'],50)->default('ACTIVE');
             $table->string('address',255);
-            $table->string('phone_number',20);
+            $table->string('phone_number',20)->unique();
             $table->string('profile_image',255)->nullable();
             $table->string('password');
             $table->rememberToken();
