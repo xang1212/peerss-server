@@ -16,9 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/login',[UserController::class,'login']);
 Route::post('/register',[UserController::class,'register']);
+
+Route::get('/user/sel-one/{id}',[UserController::class,'selOne']);
 Route::group(['middleware'=>['auth:sanctum']], function () {
 
     Route::post('/logout',[UserController::class,'logout']);
     Route::put('/user/{id}',[UserController::class,'update']);
+    Route::get('/user/sel-all',[UserController::class,'selAll']);
     
 });
