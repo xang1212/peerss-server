@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EquipmentController extends Controller
 {
@@ -13,7 +16,12 @@ class EquipmentController extends Controller
      */
     public function index()
     {
-        //
+        return Equipment::all();
+    }
+
+    public function selOne($id)
+    {
+        return Equipment::find($id);
     }
 
     /**
@@ -23,8 +31,76 @@ class EquipmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    { 
+    // $request->validate([
+    //     'name' => 'required|string',
+    //     'category' => 'required|string',
+    //     'desc' => 'nullable|string',
+    //     'qty' => 'nullable|numeric',
+    //     'price' => 'required|numeric',
+    //     'broken_price' => 'required|numeric',
+    //     'unit' => 'nullable|string',
+    //     'images' => 'nullable|array',
+    //     'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+    // ]);
+
+    // $equipment = new Equipment([
+    //     'name' => $request->name,
+    //     'category' => $request->category,
+    //     'desc' => $request->desc,
+    //     'qty' => $request->qty,
+    //     'price' => $request->price,
+    //     'broken_price' => $request->broken_price,
+    //     'unit' => $request->unit,
+    //     'images' => []
+    // ]);
+
+    // $equipment->save();
+
+    // if ($request->hasFile('images')) {
+    //     $images = $request->file('images');
+    //     $imageNames = [];
+
+    //     foreach ($images as $image) {
+    //         $imageName = time() . '-' . $image->getClientOriginalName();
+    //         $image->move(public_path('images'), $imageName);
+    //         $imageNames[] = $imageName;
+    //     }
+
+    //     $equipment->images = $imageNames;
+    //     $equipment->save();
+    // }
+
+    // return response()->json(['message' => 'Product created successfully'], 201);
+
+    ///////////////////////////////////
+    $request->validate([
+        'name' => 'required|string',
+        'category' => 'required|string',
+        'desc' => 'nullable|string',
+        'qty' => 'nullable|numeric',
+        'price' => 'required|numeric',
+        'broken_price' => 'required|numeric',
+        'unit' => 'nullable|string',
+        'images' => 'nullable|image',
+
+    ]);
+
+
+    $equipment = [
+        'name' => $request ->name,
+        'category' => $request ->category,
+        'desc' => $request ->desc,
+        'qty' => $request ->qty,
+        'price' => $request ->price,
+        'broken_price' => $request ->broken_price,
+        'unit' => $request ->unit,
+    ];
+    if($request->images){
+        $file = Storage::disk('public')->put('images', $request->images);
+        $equipment['images']= $file;
+    }
+    return Equipment::create($equipment);
     }
 
     /**
@@ -47,7 +123,32 @@ class EquipmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $equipment = [
+            'name' => $request ->name,
+            'category' => $request ->category,
+            'desc' => $request ->desc,
+            'qty' => $request ->qty,
+            'price' => $request ->price,
+            'broken_price' => $request ->broken_price,
+            'unit' => $request ->unit,
+            
+        ];
+        if($request->images){
+            $file = Storage::disk('public')->put('images', $request->images);
+            $equipment['images']= $file;
+        }
+       
+
+        $equipmentInst = Equipment::find($id);
+
+        
+
+        if($equipmentInst->images && $request->images){
+            unlink( 'storage/'.$equipmentInst->images);
+        }
+        $equipmentInst->update($equipment);
+
+        return $equipment;
     }
 
     /**
@@ -58,6 +159,14 @@ class EquipmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $equipment = Equipment::find($id);
+
+        
+        if($equipment->image){
+            unlink( 'storage/'.$equipment->image);
+        }
+        $equipment->delete();
+
+        return response()->json(['message' => 'equipment delete successfully'], 201);
     }
 }

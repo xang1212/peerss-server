@@ -29,6 +29,7 @@
         "phone_number": "55555555",
         "profile_image": 1687886792.jpg,
         "password": "12345678",
+        "_method": "put",
     }
 
 // login
@@ -41,12 +42,12 @@
     }
 
 // logout
-    post http://127.0.0.1:8000/api/logout
+    delete http://127.0.0.1:8000/api/logout
     token: yes
 
 // get all user
-    post http://127.0.0.1:8000/api//user/sel-all
+    get http://127.0.0.1:8000/api//user/sel-all
     token: yes
 
-// get all user
-    post http://127.0.0.1:8000/api//user/sel-one
+// get one user
+    get http://127.0.0.1:8000/api//user/sel-one

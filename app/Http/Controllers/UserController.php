@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Dotenv\Validator;
 use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator as ValidationValidator;
 
 class UserController extends Controller
@@ -97,7 +98,7 @@ class UserController extends Controller
                 $user->responsibility = $validatedData['responsibility'];
                 $user->address = $validatedData['address'];
                 $user->phone_number = $validatedData['phone_number'];
-                $user->password = $validatedData['password'];
+                $user->password = bcrypt($validatedData['password']);
     // Handle the profile image upload
     if ($request->hasFile('profile_image')) {
         $image = $request->file('profile_image');

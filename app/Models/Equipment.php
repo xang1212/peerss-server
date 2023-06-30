@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Equipment extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'name',
-        'category',
-        'desc',
-        'qty',
-        'price',
-        'broken_price',
-        'unit',
-        'images'
-    ];
+
+    protected $guarded = [];
+    // protected $fillable=[
+    //     'name',
+    //     'category',
+    //     'desc',
+    //     'qty',
+    //     'price',
+    //     'broken_price',
+    //     'unit',
+    //     'images'
+    // ];
 }
