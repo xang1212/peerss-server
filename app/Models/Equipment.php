@@ -20,4 +20,9 @@ class Equipment extends Model
     //     'unit',
     //     'images'
     // ];
+
+    public function rental_details()
+    {
+        return $this->belongsTo(RentalDetail::class);
+    }
 }

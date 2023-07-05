@@ -10,4 +10,9 @@ class RentalDetail extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function rentals()
+    {
+        return $this->belongsTo(Rental::class);
+    }
 }

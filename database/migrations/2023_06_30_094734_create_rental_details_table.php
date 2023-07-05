@@ -15,9 +15,10 @@ class CreateRentalDetailsTable extends Migration
     {
         Schema::create('rental_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('rental_id');
-            $table->integer('equipment_id');
-            $table->string('equipment_name');
+            $table->unsignedBigInteger('rental_id');
+            $table->foreign('rental_id')->references('id')->on('rentals');
+            $table->unsignedBigInteger('equipment_id');
+            $table->foreign('equipment_id')->references('id')->on('equipment');
             $table->integer('rental_qty');
             $table->decimal('price');
             $table->timestamps();

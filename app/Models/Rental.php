@@ -15,4 +15,10 @@ class Rental extends Model
     {
         return $this->hasMany(RentalDetail::class);
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
 }

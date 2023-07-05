@@ -123,6 +123,17 @@ class EquipmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|string',
+            'category' => 'required|string',
+            'desc' => 'nullable|string',
+            'qty' => 'nullable|numeric',
+            'price' => 'required|numeric',
+            'broken_price' => 'required|numeric',
+            'unit' => 'nullable|string',
+            'images' => 'nullable|image',
+        ]);
+
         $equipment = [
             'name' => $request ->name,
             'category' => $request ->category,

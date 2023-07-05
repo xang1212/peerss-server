@@ -21,7 +21,7 @@
     "images": "images/AgqgH4ZJ4YOYDV5u7PoVhUWGFbbya9E8QhrPrTSJ.jpg",
     }
 
-// update user
+// update equipment
     post http://127.0.0.1:8000/api//user//equipment/{id}
     token: yes
 

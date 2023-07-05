@@ -1,0 +1,52 @@
+// insert rental
+    post http://127.0.0.1:8000/api/rental/insert
+    token: yes
+    example:
+    {
+    "total_price":1000,
+    "rental_details":[{
+        "equipment_id":1,
+        "rental_qty":2,
+        "price":100
+    },
+    {
+        "equipment_id":2,
+        "rental_qty":2,
+        "price":100
+    },
+    {
+        "equipment_id":4,
+        "rental_qty":7,
+        "price":100
+    }]
+}
+
+// update rental
+    post http://127.0.0.1:8000/api/rental/update-address/{id}
+    token: yes
+
+    example:
+{
+    "shipping_date": "2023-07-06",
+    "picking_date": "2023-07-07",
+    "address": "aaa,bbb,aaa"
+    "_method": "put",
+}
+
+// update rental all
+    post http://127.0.0.1:8000/api/rental/update-all/{id}
+    token: yes
+
+    example:
+{
+    "address": "aaa,bbb,aaa",
+    "payment_status": "full",
+    "is_shipping": null,
+    "shipping_date": "2023-07-06",
+    "is_picking": null,
+    "picking_date": "2023-07-07",
+    "total_broken_price": "123",
+    "reciept_half_image": "images/iqsCYAqa4PQdbIeenGPRKZzODX6AADosj8RJB3mf.jpg",
+    "reciept_full_image": "images/r4d5AGt2YHW7NgqRyUWKwkZX2flM4GRNcnSrhlCJ.jpg",
+    "_method": "put",
+}

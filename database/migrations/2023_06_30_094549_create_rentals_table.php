@@ -15,18 +15,19 @@ class CreateRentalsTable extends Migration
     {
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->enum('payment_status',['HALF','FULL'],50)->default('HALF');
             $table->enum('status',['PENDING','APPROVED','DENINED','CANCEL'],50)->default('PENDING');
-            $table->string('address',255);
-            $table->boolean('is_shipping');
-            $table->date('shipping_date');
-            $table->boolean('is_picking');
-            $table->date('picking_date');
-            $table->decimal('total_price',10,2);
-            $table->decimal('total_broken_price',10,2);
-            $table->string('reciept_half_image',255);
-            $table->string('reciept_full_image',255);
+            $table->string('address',255)->nullable();
+            $table->boolean('is_shipping')->nullable();
+            $table->date('shipping_date')->nullable();
+            $table->boolean('is_picking')->nullable();
+            $table->date('picking_date')->nullable();
+            $table->decimal('total_price',10,2)->default(0);
+            $table->decimal('total_broken_price',10,2)->nullable();
+            $table->string('reciept_half_image',255)->nullable();
+            $table->string('reciept_full_image',255)->nullable();
             $table->timestamps();
         });
     }

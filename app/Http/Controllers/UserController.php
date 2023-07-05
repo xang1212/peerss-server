@@ -5,19 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
-use Dotenv\Validator;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Validator as ValidationValidator;
+
 
 class UserController extends Controller
 {
     public function selAll()
     {
         return User::all();
+    }
+
+    public function selEmplyeeOwner()
+    { 
+        return User::where('role','EMPLOYEE')->orWhere('role','OWNER')->get();
     }
 
     public function selOne($id)
