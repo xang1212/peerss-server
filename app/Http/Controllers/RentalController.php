@@ -152,7 +152,7 @@ class RentalController extends Controller
             'total_broken_price' => 'numeric',
         ]);
 
-        $equipment = [
+        $rental = [
             'address' => $request ->address,
             'payment_status' => $request ->payment_status,
             'is_shipping' => $request ->is_shipping,
@@ -164,27 +164,27 @@ class RentalController extends Controller
         ];
         if($request->reciept_half_image){
             $file = Storage::disk('public')->put('images', $request->reciept_half_image);
-            $equipment['reciept_half_image']= $file;
+            $rental['reciept_half_image']= $file;
         }
 
         if($request->reciept_full_image){
             $file = Storage::disk('public')->put('images', $request->reciept_full_image);
-            $equipment['reciept_full_image']= $file;
+            $rental['reciept_full_image']= $file;
         }
        
 
-        $equipmentInst = Rental::find($id);
+        $rentalInst = Rental::find($id);
 
-        if($equipmentInst->reciept_half_image && $request->reciept_half_image){
-            unlink( 'storage/'.$equipmentInst->reciept_half_image);
+        if($rentalInst->reciept_half_image && $request->reciept_half_image){
+            unlink( 'storage/'.$rentalInst->reciept_half_image);
         }
 
-        if($equipmentInst->reciept_full_image && $request->reciept_full_image){
-            unlink( 'storage/'.$equipmentInst->reciept_full_image);
+        if($rentalInst->reciept_full_image && $request->reciept_full_image){
+            unlink( 'storage/'.$rentalInst->reciept_full_image);
         }
-        $equipmentInst->update($equipment);
+        $rentalInst->update($rental);
 
-        return $equipment;
+        return $rental;
     }
 
 

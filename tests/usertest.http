@@ -13,8 +13,23 @@
         "password": "12345678",
     }
 
+// register employee
+    post http://127.0.0.1:8000/api/user/employee-register
+
+    example:
+    {
+        "first_name": "aaa",
+        "last_name": "aaa",
+        "gender": "MALE",
+        "responsibility": "aaa",
+        "address": "aaa",
+        "phone_number": "55555555",
+        "profile_image": null,
+        "password": "12345678",
+    }
+
 // update user
-    post http://127.0.0.1:8000/api//user//user/{id}
+    post http://127.0.0.1:8000/api/user/update/{id}
     token: yes
 
     example:

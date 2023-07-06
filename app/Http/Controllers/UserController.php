@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -23,6 +23,40 @@ class UserController extends Controller
     {
         return User::find($id);
     }
+
+    public function employeeRegister(Request $request){
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'role' => 'required|string',
+            'gender' => 'required|string',
+            'responsibility' => 'required|string',
+            'address' => 'required|string',
+            'phone_number' => 'required|string|unique:users,phone_number',
+            'profile_image' => 'nullable',
+            'password' => 'required|string',
+    
+        ]);
+    
+    
+        $user = [
+            'first_name' => $request ->first_name,
+            'last_name' => $request ->last_name,
+            'role' => $request ->role,
+            'gender' => $request ->gender,
+            'responsibility' => $request ->responsibility,
+            'address' => $request ->address,
+            'phone_number' => $request ->phone_number,
+            'profile_image' => $request ->profile_image,
+            'password' => $request ->password,
+        ];
+        if($request->profile_image){
+            $file = Storage::disk('public')->put('images', $request->profile_image);
+            $user['images']= $file;
+        }
+        return User::create($user);
+    }
+
 
     public function register(Request $request)
     {
@@ -71,12 +105,46 @@ class UserController extends Controller
         return response($response, 201);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $user = $request->user();
+    //     $user = $request->user();
 
-    // Validate the form data
-    $validatedData = $request->validate([
+    // // Validate the form data
+    // $validatedData = $request->validate([
+    //     'first_name' => 'required|string',
+    //     'last_name' => 'required|string',
+    //     'gender' => 'required|string',
+    //     'responsibility' => 'required|string',
+    //     'address' => 'required|string',
+    //     'role' => 'required|string',
+    //     'status' => 'required|string',
+    //     'phone_number' => 'required|string',
+    //     'profile_image' => 'nullable',
+    //     'password' => 'required|string',
+    // ]);
+    // // Update the user data
+    //             $user->first_name = $validatedData['first_name'];
+    //             $user->last_name = $validatedData['last_name'];
+    //             $user->gender = $validatedData['gender'];
+    //             $user->role = $validatedData['role'];
+    //             $user->status = $validatedData['status'];
+    //             $user->responsibility = $validatedData['responsibility'];
+    //             $user->address = $validatedData['address'];
+    //             $user->phone_number = $validatedData['phone_number'];
+    //             $user->password = bcrypt($validatedData['password']);
+    // // Handle the profile image upload
+    // if ($request->hasFile('profile_image')) {
+    //     $image = $request->file('profile_image');
+    //     $filename = time().'.'.$image->getClientOriginalExtension();
+    //     $image->storeAs('public/images', $filename);
+    //     $user->profile_image = $filename;
+    // }
+
+    // $user->save();
+
+    // return response()->json(['message' => 'Profile updated successfully'], 200);
+
+    $request->validate([
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'gender' => 'required|string',
@@ -88,29 +156,36 @@ class UserController extends Controller
         'profile_image' => 'nullable',
         'password' => 'required|string',
     ]);
-    // Update the user data
-                $user->first_name = $validatedData['first_name'];
-                $user->last_name = $validatedData['last_name'];
-                $user->gender = $validatedData['gender'];
-                $user->role = $validatedData['role'];
-                $user->status = $validatedData['status'];
-                $user->responsibility = $validatedData['responsibility'];
-                $user->address = $validatedData['address'];
-                $user->phone_number = $validatedData['phone_number'];
-                $user->password = bcrypt($validatedData['password']);
-    // Handle the profile image upload
-    if ($request->hasFile('profile_image')) {
-        $image = $request->file('profile_image');
-        $filename = time().'.'.$image->getClientOriginalExtension();
-        $image->storeAs('public/images', $filename);
-        $user->profile_image = $filename;
+
+    $user = [
+        'first_name' => $request ->first_name,
+        'last_name' => $request ->last_name,
+        'gender' => $request ->gender,
+        'responsibility' => $request ->responsibility,
+        'address' => $request ->address,
+        'role' => $request ->role,
+        'status' => $request ->status,
+        'phone_number' => $request ->phone_number,
+        'profile_image' => $request ->profile_image,
+        'password' => bcrypt($request ->password),
+        
+    ];
+    if($request->profile_image){
+        $file = Storage::disk('public')->put('images', $request->profile_image);
+        $user['images']= $file;
     }
-
-    $user->save();
-
-    return response()->json(['message' => 'Profile updated successfully'], 200);
-
    
+
+    $userInst = User::find($id);
+
+    
+
+    if($userInst->profile_image && $request->profile_image){
+        unlink( 'storage/'.$userInst->profile_image);
+    }
+    $userInst->update($user);
+
+    return $user;
     }
 
 

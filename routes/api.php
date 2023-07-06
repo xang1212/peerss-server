@@ -34,6 +34,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::put('/user/update/{id}',[UserController::class,'update']);
     Route::get('/user/sel-all',[UserController::class,'selAll']);
     Route::get('/user/sel-employee-owner',[UserController::class,'selEmplyeeOwner']);
+    Route::post('/user/employee-register',[UserController::class,'employeeRegister']);
 
     //Equipment 
     Route::post('/equipment/insert',[EquipmentController::class,'store']);
