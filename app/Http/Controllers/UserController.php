@@ -25,6 +25,8 @@ class UserController extends Controller
     }
 
     public function employeeRegister(Request $request){
+
+        dd($request);
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
@@ -52,8 +54,10 @@ class UserController extends Controller
         ];
         if($request->profile_image){
             $file = Storage::disk('public')->put('images', $request->profile_image);
-            $user['images']= $file;
+            $user['profile_image']= $file;
         }
+
+
         return User::create($user);
     }
 
@@ -172,9 +176,9 @@ class UserController extends Controller
     ];
     if($request->profile_image){
         $file = Storage::disk('public')->put('images', $request->profile_image);
-        $user['images']= $file;
+        $user['profile_image']= $file;
     }
-   
+
 
     $userInst = User::find($id);
 
