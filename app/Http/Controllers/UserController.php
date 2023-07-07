@@ -26,7 +26,6 @@ class UserController extends Controller
 
     public function employeeRegister(Request $request){
 
-        dd($request);
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
@@ -157,8 +156,8 @@ class UserController extends Controller
         'role' => 'required|string',
         'status' => 'required|string',
         'phone_number' => 'required|string',
-        'profile_image' => 'nullable',
-        'password' => 'required|string',
+        'profile_image' => 'nullable|image',
+        'password' => 'string',
     ]);
 
     $user = [
@@ -170,7 +169,6 @@ class UserController extends Controller
         'role' => $request ->role,
         'status' => $request ->status,
         'phone_number' => $request ->phone_number,
-        'profile_image' => $request ->profile_image,
         'password' => bcrypt($request ->password),
         
     ];
@@ -221,6 +219,20 @@ class UserController extends Controller
 
         return response($response, 201);
     }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        
+        if($user->profile_image){
+            unlink( 'storage/'.$user->profile_image);
+        }
+        $user->delete();
+
+        return response()->json(['message' => 'user delete successfully'], 201);
+    }
+
     public function logout(Request $request)
     {
 
@@ -230,4 +242,7 @@ class UserController extends Controller
             'message' => 'Logged out'
         ];
     }
+
+
 }
+

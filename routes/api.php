@@ -35,11 +35,12 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/user/sel-all',[UserController::class,'selAll']);
     Route::get('/user/sel-employee-owner',[UserController::class,'selEmplyeeOwner']);
     Route::post('/user/employee-register',[UserController::class,'employeeRegister']);
+    Route::delete('/user/delete/{id}',[UserController::class,'destroy']);
 
     //Equipment 
     Route::post('/equipment/insert',[EquipmentController::class,'store']);
     Route::put('/equipment/update/{id}',[EquipmentController::class,'update']);
-    Route::put('/equipment/delete/{id}',[EquipmentController::class,'destroy']);
+    Route::delete('/equipment/delete/{id}',[EquipmentController::class,'destroy']);
 
     //rental 
     Route::post('/rental/insert',[RentalController::class,'store']);

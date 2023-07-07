@@ -66,3 +66,8 @@
 
 // get one user
     get http://127.0.0.1:8000/api//user/sel-one
+
+
+// delete user
+    delete http://127.0.0.1:8000/api/user/delete/{id}
+    token: yes

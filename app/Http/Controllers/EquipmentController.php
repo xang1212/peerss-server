@@ -131,7 +131,7 @@ class EquipmentController extends Controller
             'price' => 'required|numeric',
             'broken_price' => 'required|numeric',
             'unit' => 'nullable|string',
-            'images' => 'nullable|image',
+            'images' => 'nullable',
         ]);
 
         $equipment = [
