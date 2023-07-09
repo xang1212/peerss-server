@@ -80,24 +80,34 @@ class UserController extends Controller
         // ];
 
         // $user = User::create($prepareUser);
-
-        $fields = $request->validate([
+  $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'gender' => 'required|string',
+            'responsibility' => 'nullable|string',
             'address' => 'required|string',
             'phone_number' => 'required|string|unique:users,phone_number',
+            'profile_image' => 'nullable|image',
             'password' => 'required|string',
+    
         ]);
-        //$file = Storage::disk('public')->put('images', $fields['profile_image']);
-        $user = User::create([
-            'first_name' => $fields['first_name'],
-            'last_name' => $fields['last_name'],
-            'gender' => $fields['gender'],
-            'address' => $fields['address'],
-            'phone_number' => $fields['phone_number'],
-            'password' => bcrypt($fields['password'])
-        ]);
+    
+        $user = [
+            'first_name' => $request ->first_name,
+            'last_name' => $request ->last_name,
+            'gender' => $request ->gender,
+            'responsibility' => $request ->responsibility,
+            'address' => $request ->address,
+            'phone_number' => $request ->phone_number,
+            'profile_image' => $request ->profile_image,
+            'password' => $request ->password,
+        ];
+        if($request->profile_image){
+            $file = Storage::disk('public')->put('images', $request->profile_image);
+            $user['profile_image']= $file;
+        }
+
+        $user = User::create($user);
 
         $token = $user->createToken('myapptoken')->plainTextToken;
 
@@ -152,7 +162,7 @@ class UserController extends Controller
         'first_name' => 'required|string',
         'last_name' => 'required|string',
         'gender' => 'required|string',
-        'responsibility' => 'required|string',
+        'responsibility' => 'nullable|string',
         'address' => 'required|string',
         'role' => 'required|string',
         'status' => 'required|string',
