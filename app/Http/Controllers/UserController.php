@@ -19,6 +19,11 @@ class UserController extends Controller
         return User::where('role','EMPLOYEE')->orWhere('role','OWNER')->get();
     }
 
+    public function selCustomer()
+    { 
+        return User::where('role','CUSTOMER')->get();
+    }
+
     public function selOne($id)
     {
         return User::find($id);
@@ -31,7 +36,7 @@ class UserController extends Controller
             'last_name' => 'required|string',
             'role' => 'required|string',
             'gender' => 'required|string',
-            'responsibility' => 'required|string',
+            'responsibility' => 'string',
             'address' => 'required|string',
             'phone_number' => 'required|string|unique:users,phone_number',
             'profile_image' => 'nullable',
@@ -80,10 +85,8 @@ class UserController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'gender' => 'required|string',
-            'responsibility' => 'required|string',
             'address' => 'required|string',
             'phone_number' => 'required|string|unique:users,phone_number',
-            'profile_image' => 'nullable',
             'password' => 'required|string',
         ]);
         //$file = Storage::disk('public')->put('images', $fields['profile_image']);
@@ -91,10 +94,8 @@ class UserController extends Controller
             'first_name' => $fields['first_name'],
             'last_name' => $fields['last_name'],
             'gender' => $fields['gender'],
-            'responsibility' => $fields['responsibility'],
             'address' => $fields['address'],
             'phone_number' => $fields['phone_number'],
-            'profile_image' => $fields['profile_image'],
             'password' => bcrypt($fields['password'])
         ]);
 

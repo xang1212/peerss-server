@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('last_name',100);
             $table->enum('gender',['MALE','FEMALE'],50)->default('MALE');
             $table->enum('role',['OWNER','EMPLOYEE','CUSTOMER'],50)->default('CUSTOMER');
-            $table->string('responsibility',255);
+            $table->string('responsibility',255)->nullable();
             $table->enum('status',['ACTIVE','INACTIVE'],50)->default('ACTIVE');
             $table->string('address',255);
             $table->string('phone_number',20)->unique();
