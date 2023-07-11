@@ -22,7 +22,7 @@ class CreateEquipmentTable extends Migration
             $table->decimal('price',10,2);
             $table->decimal('broken_price',8,2);
             $table->string('unit',20);
-            $table->string("images")->nullable();
+            $table->string("images",600)->nullable();
             $table->timestamps();
         });
     }
