@@ -34,9 +34,9 @@ class UserController extends Controller
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'role' => 'required|string',
+            'role' => 'nullable|string',
             'gender' => 'required|string',
-            'responsibility' => 'string',
+            'responsibility' => 'nullable|string',
             'address' => 'required|string',
             'phone_number' => 'required|string|unique:users,phone_number',
             'profile_image' => 'nullable',
@@ -54,7 +54,7 @@ class UserController extends Controller
             'address' => $request ->address,
             'phone_number' => $request ->phone_number,
             'profile_image' => $request ->profile_image,
-            'password' => $request ->password,
+            'password' => bcrypt($request ->password),
         ];
         if($request->profile_image){
             $file = Storage::disk('public')->put('images', $request->profile_image);
@@ -100,7 +100,7 @@ class UserController extends Controller
             'address' => $request ->address,
             'phone_number' => $request ->phone_number,
             'profile_image' => $request ->profile_image,
-            'password' => $request ->password,
+            'password' => bcrypt($request ->password),
         ];
         if($request->profile_image){
             $file = Storage::disk('public')->put('images', $request->profile_image);
@@ -168,7 +168,6 @@ class UserController extends Controller
         'status' => 'required|string',
         'phone_number' => 'required|string',
         'profile_image' => 'nullable|image',
-        'password' => 'string',
     ]);
 
     $user = [
@@ -180,7 +179,6 @@ class UserController extends Controller
         'role' => $request ->role,
         'status' => $request ->status,
         'phone_number' => $request ->phone_number,
-        'password' => bcrypt($request ->password),
         
     ];
     if($request->profile_image){

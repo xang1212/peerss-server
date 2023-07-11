@@ -82,7 +82,7 @@ class EquipmentController extends Controller
         'price' => 'required|numeric',
         'broken_price' => 'required|numeric',
         'unit' => 'nullable|string',
-        'images' => 'nullable|image',
+        'images.*' => 'nullable|image',
 
     ]);
 
@@ -96,10 +96,18 @@ class EquipmentController extends Controller
         'broken_price' => $request ->broken_price,
         'unit' => $request ->unit,
     ];
-    if($request->images){
-        $file = Storage::disk('public')->put('images', $request->images);
-        $equipment['images']= $file;
+
+    if ($request->hasFile('images')) {
+        $imagePaths = [];
+
+        foreach ($request->file('images') as $file) {
+            $path = $file->store('images', 'public');
+            $imagePaths[] = $path;
+        }
+        $imagePathsString = '[' . implode(',', $imagePaths) . ']';
+        $equipment['images'] = $imagePathsString;
     }
+
     return Equipment::create($equipment);
     }
 
@@ -131,7 +139,7 @@ class EquipmentController extends Controller
             'price' => 'required|numeric',
             'broken_price' => 'required|numeric',
             'unit' => 'nullable|string',
-            'images' => 'nullable',
+            'images.*' => 'nullable|image',
         ]);
 
         $equipment = [
@@ -144,19 +152,21 @@ class EquipmentController extends Controller
             'unit' => $request ->unit,
             
         ];
-        if($request->images){
-            $file = Storage::disk('public')->put('images', $request->images);
-            $equipment['images']= $file;
+
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+    
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('images', 'public');
+                $imagePaths[] = $path;
+            }
+            $imagePathsString = '[' . implode(',', $imagePaths) . ']';
+            $equipment['images'] = $imagePathsString;
         }
        
 
         $equipmentInst = Equipment::find($id);
 
-        
-
-        if($equipmentInst->images && $request->images){
-            unlink( 'storage/'.$equipmentInst->images);
-        }
         $equipmentInst->update($equipment);
 
         return $equipment;

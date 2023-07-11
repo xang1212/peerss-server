@@ -16,7 +16,7 @@ class CreateEquipmentTable extends Migration
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
             $table->string('name',100);
-            $table->enum('category',['chair','table','spoon','dish','tent'],50)->default('chair');
+            $table->enum('category',["FAN","FORK", "SPOON", "BOWL", "CHAIR", "TABLE", "TENT", "DISH"],50)->default('CHAIR');
             $table->string('desc');
             $table->integer('qty');
             $table->decimal('price',10,2);
