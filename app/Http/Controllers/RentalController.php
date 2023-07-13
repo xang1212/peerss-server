@@ -58,7 +58,6 @@ class RentalController extends Controller
     
             $rental->save();
            
-            
             $rentalDetails = $validatedData['rental_details'];
             foreach ($rentalDetails as $detail) {
                 $rentalDetails = new RentalDetail([

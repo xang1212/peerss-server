@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\FoodController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\UserController;
 use App\Models\Equipment;
@@ -27,6 +28,10 @@ Route::get('/user/sel-one/{id}',[UserController::class,'selOne']);
 Route::get('/equipment/sel-all',[EquipmentController::class,'index']);
 Route::get('/equipment/sel-one/{id}',[EquipmentController::class,'selOne']);
 
+//Equipment
+Route::get('/food/sel-all',[FoodController::class,'index']);
+Route::get('/food/sel-one/{id}',[FoodController::class,'show']);
+
 Route::group(['middleware'=>['auth:sanctum']], function () {
 
     // User
@@ -42,6 +47,11 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::post('/equipment/insert',[EquipmentController::class,'store']);
     Route::put('/equipment/update/{id}',[EquipmentController::class,'update']);
     Route::delete('/equipment/delete/{id}',[EquipmentController::class,'destroy']);
+
+    //food 
+    Route::post('/food/insert',[FoodController::class,'store']);
+    Route::put('/food/update/{id}',[FoodController::class,'update']);
+    Route::delete('/food/delete/{id}',[FoodController::class,'destroy']);
 
     //rental 
     Route::post('/rental/insert',[RentalController::class,'store']);

@@ -163,9 +163,16 @@ class EquipmentController extends Controller
             $imagePathsString = '[' . implode(',', $imagePaths) . ']';
             $equipment['images'] = $imagePathsString;
         }
-       
+        // if($request->images){
+        //     $file = Storage::disk('public')->put('images', $request->images);
+        //     $food['images']= $file;
+        // }
 
         $equipmentInst = Equipment::find($id);
+
+        // if($equipmentInst->images && $request->images){
+        //     unlink( 'storage/'.$equipmentInst->images);
+        // }
 
         $equipmentInst->update($equipment);
 
@@ -188,6 +195,6 @@ class EquipmentController extends Controller
         }
         $equipment->delete();
 
-        return response()->json(['message' => 'equipment delete successfully'], 201);
+        return response()->json(['message' => 'ລົບອຸປະກອນສຳເລັດ'], 201);
     }
 }
