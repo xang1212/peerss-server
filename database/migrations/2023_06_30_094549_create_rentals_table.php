@@ -20,9 +20,9 @@ class CreateRentalsTable extends Migration
             $table->enum('payment_status',['HALF','FULL'],50)->default('HALF');
             $table->enum('status',['PENDING','APPROVED','DENINED','CANCEL'],50)->default('PENDING');
             $table->string('address',255)->nullable();
-            $table->boolean('is_shipping')->nullable();
+            $table->enum('is_shipping',['YES','NO'],50)->default('NO');
             $table->date('shipping_date')->nullable();
-            $table->boolean('is_picking')->nullable();
+            $table->enum('is_picking',['YES','NO'],50)->default('NO');
             $table->date('picking_date')->nullable();
             $table->decimal('total_price',10,2)->default(0);
             $table->decimal('total_broken_price',10,2)->nullable();

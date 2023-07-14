@@ -4,6 +4,9 @@
     example:
     {
     "total_price":1000,
+    "address": "aaa,aaa,aaa",
+    "shipping_date": "2023-07-14",
+    "picking_date": "2023-07-14",
     "rental_details":[{
         "equipment_id":1,
         "rental_qty":2,

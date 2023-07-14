@@ -36,13 +36,25 @@ class RentalController extends Controller
             $user = Auth::user(); // get the authenticated user
     
             $validatedData = $request->validate([
+                // 'total_price' => 'required|numeric',
+                // 'address' => 'nullable|string',
+                // 'is_shipping' => 'nullable',
+                // 'shipping_date' => 'nullable',
+                // 'is_picking' => 'nullable',
+                // 'picking_date' => 'nullable',
+                // 'reciept_half_image' => 'nullable',
+                // 'reciept_full_image' => 'nullable',
+                // 'total_broken_price' => 'numeric',
+                // 'rental_details' => 'required|array',
+                // 'rental_details.*.equipment_id' => 'required|exists:equipment,id',
+                // 'rental_details.*.rental_qty' => 'required',
+                // 'rental_details.*.price' => 'required',
+
                 'total_price' => 'required|numeric',
-                'address' => 'nullable|string',
-                'is_shipping' => 'nullable',
-                'shipping_date' => 'nullable',
-                'is_picking' => 'nullable',
-                'picking_date' => 'nullable',
-                'reciept_half_image' => 'nullable',
+                'address' => 'required|string',
+                'shipping_date' => 'required',
+                'picking_date' => 'required',
+                'reciept_half_image' => 'required',
                 'reciept_full_image' => 'nullable',
                 'total_broken_price' => 'numeric',
                 'rental_details' => 'required|array',
@@ -51,13 +63,31 @@ class RentalController extends Controller
                 'rental_details.*.price' => 'required',
             ]);
     
-            $rental = new Rental([
+            // $rental = new Rental([
+            //     'user_id' => $user->id,
+            //     'total_price' => $validatedData['total_price'],
+            //     'address' => $validatedData['address'],
+            //     'shipping_date' => $validatedData['shipping_date'],
+            //     'picking_date' => $validatedData['picking_date'],
+            // ]);
+
+            // $rental->save();
+
+            $rental = [
                 'user_id' => $user->id,
-                'total_price' => $validatedData['total_price']
-            ]);
-    
-            $rental->save();
+                'total_price' => $validatedData['total_price'],
+                'address' => $validatedData['address'],
+                'shipping_date' => $validatedData['shipping_date'],
+                'picking_date' => $validatedData['picking_date'],
+            ];
+
+            if($request->reciept_half_image){
+                $file = Storage::disk('public')->put('images', $request->reciept_half_image);
+                $rental['reciept_half_image']= $file;
+            }
            
+            $rental = Rental::create($rental);
+
             $rentalDetails = $validatedData['rental_details'];
             foreach ($rentalDetails as $detail) {
                 $rentalDetails = new RentalDetail([
