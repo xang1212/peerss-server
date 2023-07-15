@@ -1,0 +1,32 @@
+// get all packages
+    get http://127.0.0.1:8000/api/package/sel-all
+
+
+// insert package
+    post http://127.0.0.1:8000/api/package/insert
+    token: yes
+    example:
+    {
+    "name":"aaa",
+    "desc": "aaa",
+    "price": "111",
+    "card_qty": "111",
+    "package_equipment":[{
+        "equipment_id":1,
+        "package_qty":2,
+        "equipment_name":"aaa"
+    },
+    {
+        "equipment_id":2,
+        "package_qty":2,
+        "equipment_name":"aaa"
+    }],
+    "package_food":[{
+        "food_id":1,
+        "food_name":"aaa"
+    },
+    {
+        "food_id":3,
+        "food_name":"aaa"
+    }]
+}

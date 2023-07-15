@@ -1,0 +1,34 @@
+// get all food
+    get http://127.0.0.1:8000/api/food/sel-all
+
+
+// get one food
+    post http://127.0.0.1:8000/api/food/sel-one/{id}
+
+
+// insert food
+    post http://127.0.0.1:8000/api/food/insert
+    token: yes
+    example:
+    {
+    "name": "aaa",
+    "desc": "aaaaaaaa",
+    "unit": null,
+    }
+
+// update food
+    post http://127.0.0.1:8000/api/food/{id}
+    token: yes
+
+    example:
+    {
+    "name": "aaa",
+    "desc": "aaaaaaaa",
+    "unit": null,
+    "_method": "put",
+    }
+
+
+// delete food
+    delete http://127.0.0.1:8000/api/food/delete/{id}
+    token: yes

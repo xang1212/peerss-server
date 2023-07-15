@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\UserController;
 use App\Models\Equipment;
@@ -28,9 +29,12 @@ Route::get('/user/sel-one/{id}',[UserController::class,'selOne']);
 Route::get('/equipment/sel-all',[EquipmentController::class,'index']);
 Route::get('/equipment/sel-one/{id}',[EquipmentController::class,'selOne']);
 
-//Equipment
+//food
 Route::get('/food/sel-all',[FoodController::class,'index']);
 Route::get('/food/sel-one/{id}',[FoodController::class,'show']);
+
+//package
+Route::get('/package/sel-all',[PackageController::class,'index']);
 
 Route::group(['middleware'=>['auth:sanctum']], function () {
 
@@ -58,5 +62,11 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/rental/sel-all',[RentalController::class,'index']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update-all/{id}',[RentalController::class,'update']);
+
+    //package 
+    Route::post('/package/insert',[PackageController::class,'store']);
+
+    // Route::put('/rental/update-address/{id}',[PackageController::class,'updateAddress']);
+    // Route::put('/rental/update-all/{id}',[PackageController::class,'update']);
 
 });

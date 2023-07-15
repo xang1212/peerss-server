@@ -15,6 +15,11 @@ class CreatePackageFoodTable extends Migration
     {
         Schema::create('package_food', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('package_id');
+            $table->foreign('package_id')->references('id')->on('packages');
+            $table->unsignedBigInteger('food_id');
+            $table->foreign('food_id')->references('id')->on('food');
+            $table->string('food_name',100);
             $table->timestamps();
         });
     }

@@ -10,4 +10,9 @@ class PackageEquipment extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function packages()
+    {
+        return $this->belongsTo(Package::class);
+    }
 }

@@ -1,9 +1,9 @@
 // get all equipment
-    get http://127.0.0.1:8000/api//equipment/sel-all
+    get http://127.0.0.1:8000/api/equipment/sel-all
 
 
 // get one equipment
-    post http://127.0.0.1:8000/api//equipment/sel-one/{id}
+    post http://127.0.0.1:8000/api/equipment/sel-one/{id}
 
 
 // insert equipment
@@ -22,7 +22,7 @@
     }
 
 // update equipment
-    post http://127.0.0.1:8000/api//user//equipment/{id}
+    post http://127.0.0.1:8000/api/equipment/{id}
     token: yes
 
     example:
@@ -40,5 +40,5 @@
 
 
 // delete equipment
-    delete http://127.0.0.1:8000/api//equipment/delete/{id}
+    delete http://127.0.0.1:8000/api/equipment/delete/{id}
     token: yes

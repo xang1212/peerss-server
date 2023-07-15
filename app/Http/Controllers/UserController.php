@@ -208,7 +208,7 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
 
-        //check email
+        //check phone number
         $user = User::where('phone_number', $fields['phone_number'])->first();
 
         //check password
@@ -239,7 +239,7 @@ class UserController extends Controller
         }
         $user->delete();
 
-        return response()->json(['message' => 'user delete successfully'], 201);
+        return response()->json(['message' => 'ລຶບຜູ້ໃຊ້ສຳເລັດ'], 201);
     }
 
     public function logout(Request $request)

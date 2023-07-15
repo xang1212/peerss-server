@@ -34,4 +34,9 @@ class Equipment extends Model
     {
         return $this->belongsTo(RentalDetail::class);
     }
+
+    public function package_equipments()
+    {
+        return $this->belongsTo(PackageEquipment::class);
+    }
 }

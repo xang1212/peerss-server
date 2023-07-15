@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             'responsibility'=>'Take care of business',
             'address'=>'Xayxavang, Xaythany, Vientiane',
             'phone_number'=>'55555555',
-            'password'=>bcrypt(12345678)
+            'password'=>bcrypt(55555555)
         ]);
     }
 }

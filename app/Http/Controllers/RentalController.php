@@ -20,7 +20,7 @@ class RentalController extends Controller
      */
     public function index()
     {
-        dd(Auth::id());
+        return Rental::all();
     }
 
     /**
