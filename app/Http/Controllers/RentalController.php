@@ -156,7 +156,7 @@ class RentalController extends Controller
      */
     public function show($id)
     {
-        //
+        return Rental::find($id);
     }
 
     /**

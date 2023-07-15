@@ -53,3 +53,11 @@
     "reciept_full_image": "images/r4d5AGt2YHW7NgqRyUWKwkZX2flM4GRNcnSrhlCJ.jpg",
     "_method": "put",
 }
+
+// get all rental
+    get http://127.0.0.1:8000/api/rental/sel-all
+    token: yes
+
+// get one rental
+    get http://127.0.0.1:8000/api/rental/sel-one/{id}
+    token: yes

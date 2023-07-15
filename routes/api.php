@@ -60,6 +60,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     //rental 
     Route::post('/rental/insert',[RentalController::class,'store']);
     Route::get('/rental/sel-all',[RentalController::class,'index']);
+    Route::get('/rental/sel-one/{id}',[RentalController::class,'show']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update-all/{id}',[RentalController::class,'update']);
 
