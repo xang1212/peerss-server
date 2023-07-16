@@ -26,8 +26,9 @@ class CreateRentalsTable extends Migration
             $table->date('picking_date')->nullable();
             $table->decimal('total_price',10,2)->default(0);
             $table->decimal('total_broken_price',10,2)->nullable();
-            $table->string('reciept_half_image',255)->nullable();
-            $table->string('reciept_full_image',255)->nullable();
+            $table->enum('type',['INDIVIDUAL', 'PACKAGE'],50)->default('INDIVIDUAL');
+            $table->string('receipt_half_image',255)->nullable();
+            $table->string('receipt_full_image',255)->nullable();
             $table->timestamps();
         });
     }

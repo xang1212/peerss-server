@@ -20,10 +20,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// User
+// User 
 Route::post('/login',[UserController::class,'login']);
 Route::post('/register',[UserController::class,'register']);
 Route::get('/user/sel-one/{id}',[UserController::class,'selOne']);
+
+Route::get('/district',[RentalController::class,'getDistrict']);
 
 //Equipment
 Route::get('/equipment/sel-all',[EquipmentController::class,'index']);
