@@ -63,8 +63,8 @@ class RentalController extends Controller
                 'picking_date' => $rental->picking_date,
                 'total_price' => floatval($rental->total_price),
                 'total_broken_price' => $rental->total_broken_price,
-                'reciept_half_image' => $rental->reciept_half_image,
-                'reciept_full_image' => $rental->reciept_full_image,
+                'receipt_half_image' => $rental->receipt_half_image,
+                'receipt_full_image' => $rental->receipt_full_image,
                 'equipments' => $formattedEquipments,
                 'created_at' => $rental->created_at,
                 'updated_at' => $rental->updated_at,
@@ -106,8 +106,8 @@ class RentalController extends Controller
                 'address' => 'required|string',
                 'shipping_date' => 'required',
                 'picking_date' => 'required',
-                'reciept_half_image' => 'required',
-                'reciept_full_image' => 'nullable',
+                'receipt_half_image' => 'required',
+                'receipt_full_image' => 'nullable',
                 'total_broken_price' => 'numeric',
                 'rental_details' => 'required|array',
                 'rental_details.*.equipment_id' => 'required|exists:equipment,id',
@@ -133,9 +133,9 @@ class RentalController extends Controller
                 'picking_date' => $validatedData['picking_date'],
             ];
 
-            if($request->reciept_half_image){
-                $file = Storage::disk('public')->put('images', $request->reciept_half_image);
-                $rental['reciept_half_image']= $file;
+            if($request->receipt_half_image){
+                $file = Storage::disk('public')->put('images', $request->receipt_half_image);
+                $rental['receipt_half_image']= $file;
             }
            
             $rental = Rental::create($rental);
@@ -251,8 +251,8 @@ class RentalController extends Controller
             'picking_date' => $rental->picking_date,
             'total_price' => floatval($rental->total_price),
             'total_broken_price' => $rental->total_broken_price,
-            'reciept_half_image' => $rental->reciept_half_image,
-            'reciept_full_image' => $rental->reciept_full_image,
+            'receipt_half_image' => $rental->receipt_half_image,
+            'receipt_full_image' => $rental->receipt_full_image,
             'equipments' => $formattedEquipments,
             'created_at' => $rental->created_at,
             'updated_at' => $rental->updated_at,
@@ -286,8 +286,9 @@ class RentalController extends Controller
             'shipping_date' => 'nullable',
             'is_picking' => 'nullable',
             'picking_date' => 'nullable',
-            'reciept_half_image' => 'nullable|image',
-            'reciept_full_image' => 'nullable|image',
+            'type' => 'nullable',
+            'receipt_half_image' => 'nullable|image',
+            'receipt_full_image' => 'nullable|image',
             'total_broken_price' => 'numeric',
         ]);
 
@@ -298,28 +299,29 @@ class RentalController extends Controller
             'shipping_date' => $request ->shipping_date,
             'is_picking' => $request ->is_picking,
             'picking_date' => $request ->picking_date,
+            'type' => $request ->type,
             'total_broken_price' => $request ->total_broken_price,
             
         ];
-        if($request->reciept_half_image){
-            $file = Storage::disk('public')->put('images', $request->reciept_half_image);
-            $rental['reciept_half_image']= $file;
+        if($request->receipt_half_image){
+            $file = Storage::disk('public')->put('images', $request->receipt_half_image);
+            $rental['receipt_half_image']= $file;
         }
 
-        if($request->reciept_full_image){
-            $file = Storage::disk('public')->put('images', $request->reciept_full_image);
-            $rental['reciept_full_image']= $file;
+        if($request->receipt_full_image){
+            $file = Storage::disk('public')->put('images', $request->receipt_full_image);
+            $rental['receipt_full_image']= $file;
         }
        
 
         $rentalInst = Rental::find($id);
 
-        if($rentalInst->reciept_half_image && $request->reciept_half_image){
-            unlink( 'storage/'.$rentalInst->reciept_half_image);
+        if($rentalInst->receipt_half_image && $request->receipt_half_image){
+            unlink( 'storage/'.$rentalInst->receipt_half_image);
         }
 
-        if($rentalInst->reciept_full_image && $request->reciept_full_image){
-            unlink( 'storage/'.$rentalInst->reciept_full_image);
+        if($rentalInst->receipt_full_image && $request->receipt_full_image){
+            unlink( 'storage/'.$rentalInst->receipt_full_image);
         }
         $rentalInst->update($rental);
 
