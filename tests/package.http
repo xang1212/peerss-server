@@ -1,6 +1,9 @@
 // get all packages
     get http://127.0.0.1:8000/api/package/sel-all
 
+// get one package
+get http://127.0.0.1:8000/api/package/sel-one/id
+
 
 // insert package
     post http://127.0.0.1:8000/api/package/insert

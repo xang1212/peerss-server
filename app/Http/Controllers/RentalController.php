@@ -293,6 +293,7 @@ class RentalController extends Controller
             'shipping_date' => $rental->shipping_date,
             'is_picking' => $rental->is_picking,
             'picking_date' => $rental->picking_date,
+            'type' => $rental->type,
             'total_price' => floatval($rental->total_price),
             'total_broken_price' => $rental->total_broken_price,
             'receipt_half_image' => $rental->receipt_half_image,

@@ -19,7 +19,11 @@ class PackageController extends Controller
      */
     public function index()
     {
-        return Package::all();
+        $package = Package::all();
+
+        $package->load('package_equipment', 'package_food');
+
+        return $package;
     }
 
     /**
@@ -93,8 +97,9 @@ class PackageController extends Controller
                     'food_name' => $detail['food_name'],
                 ]);
                 $packageFoods->save();
-
             }
+
+            $package->load('package_equipment', 'package_food');
 
             DB::commit();
             return response()->json(['message' => 'Order created', 'order' => $package]);
@@ -112,7 +117,11 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        //
+        $package = Package::find($id);
+
+        $package->load('package_equipment', 'package_food');
+
+        return $package;
     }
 
     /**
