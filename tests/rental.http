@@ -36,23 +36,53 @@
     "_method": "put",
 }
 
-// update rental all
-    post http://127.0.0.1:8000/api/rental/update-all/{id}
+// update rental and add equipment broken
+    post http://127.0.0.1:8000/api/rental/update/{id}
     token: yes
 
     example:
-{
-    "address": "aaa,bbb,aaa",
-    "payment_status": "full",
-    "is_shipping": null,
-    "shipping_date": "2023-07-06",
-    "is_picking": null,
-    "picking_date": "2023-07-07",
-    "total_broken_price": "123",
-    "reciept_half_image": "images/iqsCYAqa4PQdbIeenGPRKZzODX6AADosj8RJB3mf.jpg",
-    "reciept_full_image": "images/r4d5AGt2YHW7NgqRyUWKwkZX2flM4GRNcnSrhlCJ.jpg",
-    "_method": "put",
-}
+ "rental": {
+        "id": 4,
+        "user_id": 1,
+        "payment_status": "full",
+        "status": "PENDING",
+        "address": "aaa,aaa,aaa",
+        "is_shipping": "yes",
+        "shipping_date": "2023-07-14",
+        "is_picking": "yes",
+        "picking_date": "2023-07-14",
+        "total_price": "1123",
+        "total_broken_price": "6546",
+        "type": "package",
+        "receipt_half_image": "images/fIZjiSJJJidlTPDMlSfXN1keinx6U3Q1oBWiivk2.jpg",
+        "receipt_full_image": "images/Hl3EvND2167VWk0EbQ6YsxYiaFE58QkgSAEEj51M.jpg",
+        "created_at": "2023-07-17T16:04:53.000000Z",
+        "updated_at": "2023-07-19T18:14:14.000000Z",
+        "_method": "put",
+        "rental_detail": [
+            {
+                "id": 56,
+                "rental_id": 4,
+                "equipment_id": 2,
+                "rental_qty": 15,
+                "price": "555.00",
+                "created_at": "2023-07-19T18:14:14.000000Z",
+                "updated_at": "2023-07-19T18:14:14.000000Z"
+            }
+        ],
+        "equipment_broken": [
+            {
+                "id": 7,
+                "rental_id": 4,
+                "equipment_id": 1,
+                "equipment_name": "aaaa",
+                "broken_qty": 2,
+                "broken_price": "111.00",
+                "created_at": "2023-07-19T18:14:14.000000Z",
+                "updated_at": "2023-07-19T18:14:14.000000Z"
+            }
+        ]
+    }
 
 // get all rental
     get http://127.0.0.1:8000/api/rental/sel-all

@@ -35,6 +35,11 @@ class Equipment extends Model
         return $this->belongsTo(RentalDetail::class);
     }
 
+    public function equipment_brokens()
+    {
+        return $this->belongsTo(EquipmentBroken::class);
+    }
+
     public function package_equipments()
     {
         return $this->belongsTo(PackageEquipment::class);

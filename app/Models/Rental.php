@@ -16,6 +16,11 @@ class Rental extends Model
         return $this->hasMany(RentalDetail::class);
     }
 
+    function equipment_broken()
+    {
+        return $this->hasMany(EquipmentBroken::class);
+    }
+
     public function users()
     {
         return $this->belongsTo(User::class);

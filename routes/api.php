@@ -66,6 +66,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/rental/sel-one/{id}',[RentalController::class,'show']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update/{id}',[RentalController::class,'update']);
+    //Route::put('/rental/update-eq-broken/{id}',[RentalController::class,'update_eq_broken']);
 
     //package 
     Route::post('/package/insert',[PackageController::class,'store']);

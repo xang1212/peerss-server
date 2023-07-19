@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\EquipmentBroken;
 use App\Models\Rental;
 use App\Models\RentalDetail;
 use App\Models\User;
@@ -61,6 +62,7 @@ class RentalController extends Controller
                 'shipping_date' => $rental->shipping_date,
                 'is_picking' => $rental->is_picking,
                 'picking_date' => $rental->picking_date,
+                'type' => $rental->type,
                 'total_price' => floatval($rental->total_price),
                 'total_broken_price' => $rental->total_broken_price,
                 'receipt_half_image' => $rental->receipt_half_image,
@@ -252,8 +254,6 @@ class RentalController extends Controller
      */
     public function show($id)
     {
-
-
         $rental = Rental::find($id);
     
         $customer = User::find($rental->user_id);
@@ -320,57 +320,213 @@ class RentalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+//     public function update_eq_broken(Request $request, $id)
+// {
+//     DB::beginTransaction();
+//     try {
+//         //$user = Auth::user(); // get the authenticated user
+
+//         $validatedData = $request->validate([
+//             'total_price' => 'required|numeric',
+//             'address' => 'required|string',
+//             'shipping_date' => 'required',
+//             'picking_date' => 'required',
+//             'receipt_half_image' => 'required',
+//             'receipt_full_image' => 'nullable',
+//             'total_broken_price' => 'numeric',
+//             'rental_details' => 'required|array',
+//             'rental_details.*.equipment_id' => 'required|exists:equipment,id',
+//             'rental_details.*.rental_qty' => 'required',
+//             'rental_details.*.price' => 'required',
+//         ]);
+
+//         $rental = Rental::findOrFail($id); // Find the existing rental by ID
+
+//         $rental->total_price = $validatedData['total_price'];
+//         $rental->address = $validatedData['address'];
+//         $rental->shipping_date = $validatedData['shipping_date'];
+//         $rental->picking_date = $validatedData['picking_date'];
+
+//         if ($request->hasFile('receipt_half_image')) {
+//             $file = Storage::disk('public')->put('images', $request->file('receipt_half_image'));
+//             $rental->receipt_half_image = $file;
+//         }
+
+//         $rental->save(); // Update the rental information
+
+//         // Delete existing rental details for this rental
+//         RentalDetail::where('rental_id', $rental->id)->delete();
+
+//         $rentalDetails = $validatedData['rental_details'];
+//         foreach ($rentalDetails as $detail) {
+//             $rentalDetail = new RentalDetail([
+//                 'rental_id' => $rental->id,
+//                 'equipment_id' => $detail["equipment_id"],
+//                 'rental_qty' => $detail['rental_qty'],
+//                 'price' => $detail['price']
+//             ]);
+//             $rentalDetail->save();
+//         }
+
+//         $rental->load('rental_detail');
+
+//         DB::commit();
+//         return response()->json(['message' => 'Order updated', 'order' => $rental]);
+//     } catch (Throwable $th) {
+//         DB::rollBack();
+//         throw $th;
+//     }
+// }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'address' => 'nullable|string',
+{
+    DB::beginTransaction();
+    try {
+        //$user = Auth::user(); // get the authenticated user
+
+        $validatedData = $request->validate([
+            'total_price' => 'required|numeric',
             'payment_status' => 'nullable',
+            'address' => 'required|string',
             'is_shipping' => 'nullable',
-            'shipping_date' => 'nullable',
+            'shipping_date' => 'required',
             'is_picking' => 'nullable',
-            'picking_date' => 'nullable',
+            'picking_date' => 'required',
             'type' => 'nullable',
-            'receipt_half_image' => 'nullable|image',
-            'receipt_full_image' => 'nullable|image',
             'total_broken_price' => 'numeric',
+            'receipt_half_image' => 'required',
+            'receipt_full_image' => 'nullable',
+            'total_broken_price' => 'numeric',
+            'rental_details' => 'required|array',
+            'rental_details.*.equipment_id' => 'required|exists:equipment,id',
+            'rental_details.*.rental_qty' => 'required',
+            'rental_details.*.price' => 'required',
+            'equipment_brokens' => 'nullable|array',
+            'equipment_brokens.*.equipment_id' => 'nullable|exists:equipment,id',
+            'equipment_brokens.*.equipment_name' => 'nullable',
+            'equipment_brokens.*.broken_qty' => 'nullable',
+            'equipment_brokens.*.broken_price' => 'nullable',
         ]);
 
-        $rental = [
-            'address' => $request ->address,
-            'payment_status' => $request ->payment_status,
-            'is_shipping' => $request ->is_shipping,
-            'shipping_date' => $request ->shipping_date,
-            'is_picking' => $request ->is_picking,
-            'picking_date' => $request ->picking_date,
-            'type' => $request ->type,
-            'total_broken_price' => $request ->total_broken_price,
-            
-        ];
-        if($request->receipt_half_image){
-            $file = Storage::disk('public')->put('images', $request->receipt_half_image);
-            $rental['receipt_half_image']= $file;
+        $rental = Rental::findOrFail($id); // Find the existing rental by ID
+
+        $rental->total_price = $validatedData['total_price'];
+        $rental->payment_status = $validatedData['payment_status'];
+        $rental->address = $validatedData['address'];
+        $rental->is_shipping = $validatedData['is_shipping'];
+        $rental->shipping_date = $validatedData['shipping_date'];
+        $rental->is_picking = $validatedData['is_picking'];
+        $rental->picking_date = $validatedData['picking_date'];
+        $rental->type = $validatedData['type'];
+        $rental->total_broken_price = $validatedData['total_broken_price'];
+
+        if ($request->hasFile('receipt_half_image')) {
+            $file = Storage::disk('public')->put('images', $request->file('receipt_half_image'));
+            $rental->receipt_half_image = $file;
         }
 
-        if($request->receipt_full_image){
-            $file = Storage::disk('public')->put('images', $request->receipt_full_image);
-            $rental['receipt_full_image']= $file;
+        if ($request->hasFile('receipt_full_image')) {
+            $file = Storage::disk('public')->put('images', $request->file('receipt_full_image'));
+            $rental->receipt_full_image = $file;
         }
+
+        $rental->save(); // Update the rental information
+
+        // Delete existing rental details for this rental
+        RentalDetail::where('rental_id', $rental->id)->delete();
+
+        $rentalDetails = $validatedData['rental_details'];
+        foreach ($rentalDetails as $detail) {
+            $rentalDetail = new RentalDetail([
+                'rental_id' => $rental->id,
+                'equipment_id' => $detail["equipment_id"],
+                'rental_qty' => $detail['rental_qty'],
+                'price' => $detail['price']
+            ]);
+            $rentalDetail->save();
+        }
+
+        if (array_key_exists('equipment_brokens', $validatedData)) {
+            // Delete existing equipment brokens for this rental
+            EquipmentBroken::where('rental_id', $rental->id)->delete();
+
+            $EquipmentBrokens = $validatedData['equipment_brokens'];
+            foreach ($EquipmentBrokens as $detail) {
+                $EquipmentBroken = new EquipmentBroken([
+                    'rental_id' => $rental->id,
+                    'equipment_id' => $detail["equipment_id"],
+                    'equipment_name' => $detail["equipment_name"],
+                    'broken_qty' => $detail['broken_qty'],
+                    'broken_price' => $detail['broken_price']
+                ]);
+                $EquipmentBroken->save();
+            }
+            $rental->load('rental_detail', 'equipment_broken');
+        }
+
+        else {
+            $rental->load('rental_detail'); // Only load the updated rental details
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'rental updated', 'rental' => $rental]);
+    } catch (Throwable $th) {
+        DB::rollBack();
+        throw $th;
+    }
+}
+
+
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'address' => 'nullable|string',
+    //         'payment_status' => 'nullable',
+    //         'is_shipping' => 'nullable',
+    //         'shipping_date' => 'nullable',
+    //         'is_picking' => 'nullable',
+    //         'picking_date' => 'nullable',
+    //         'type' => 'nullable',
+    //         'receipt_half_image' => 'nullable|image',
+    //         'receipt_full_image' => 'nullable|image',
+    //         'total_broken_price' => 'numeric',
+    //     ]);
+
+    //     $rental = [
+    //         'address' => $request ->address,
+    //         'payment_status' => $request ->payment_status,
+    //         'is_shipping' => $request ->is_shipping,
+    //         'shipping_date' => $request ->shipping_date,
+    //         'is_picking' => $request ->is_picking,
+    //         'picking_date' => $request ->picking_date,
+    //         'type' => $request ->type,
+    //         'total_broken_price' => $request ->total_broken_price,
+            
+    //     ];
+    //     if($request->receipt_half_image){
+    //         $file = Storage::disk('public')->put('images', $request->receipt_half_image);
+    //         $rental['receipt_half_image']= $file;
+    //     }
+
+    //     if($request->receipt_full_image){
+    //         $file = Storage::disk('public')->put('images', $request->receipt_full_image);
+    //         $rental['receipt_full_image']= $file;
+    //     }
        
 
-        $rentalInst = Rental::find($id);
+    //     $rentalInst = Rental::find($id);
 
-        if($rentalInst->receipt_half_image && $request->receipt_half_image){
-            unlink( 'storage/'.$rentalInst->receipt_half_image);
-        }
+    //     if($rentalInst->receipt_half_image && $request->receipt_half_image){
+    //         unlink( 'storage/'.$rentalInst->receipt_half_image);
+    //     }
 
-        if($rentalInst->receipt_full_image && $request->receipt_full_image){
-            unlink( 'storage/'.$rentalInst->receipt_full_image);
-        }
-        $rentalInst->update($rental);
+    //     if($rentalInst->receipt_full_image && $request->receipt_full_image){
+    //         unlink( 'storage/'.$rentalInst->receipt_full_image);
+    //     }
+    //     $rentalInst->update($rental);
 
-        return $rental;
-    }
+    //     return $rental;
+    // }
 
 
     public function updateAddress(Request $request, $id)
