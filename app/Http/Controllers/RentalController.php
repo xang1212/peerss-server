@@ -395,7 +395,7 @@ class RentalController extends Controller
             'picking_date' => 'required',
             'type' => 'nullable',
             'total_broken_price' => 'numeric',
-            'receipt_half_image' => 'required',
+            'receipt_half_image' => 'nullable',
             'receipt_full_image' => 'nullable',
             'total_broken_price' => 'numeric',
             'rental_details' => 'required|array',
