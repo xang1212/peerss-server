@@ -388,20 +388,20 @@ class RentalController extends Controller
         $validatedData = $request->validate([
             'total_price' => 'required|numeric',
             'payment_status' => 'nullable',
+            'status' => 'nullable',
             'address' => 'required|string',
             'is_shipping' => 'nullable',
             'shipping_date' => 'required',
             'is_picking' => 'nullable',
             'picking_date' => 'required',
             'type' => 'nullable',
-            'total_broken_price' => 'numeric',
             'receipt_half_image' => 'nullable',
             'receipt_full_image' => 'nullable',
-            'total_broken_price' => 'numeric',
-            'rental_details' => 'required|array',
-            'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-            'rental_details.*.rental_qty' => 'required',
-            'rental_details.*.price' => 'required',
+            'total_broken_price' => 'numeric|nullable',
+            'rental_details' => 'nullable|array',
+            'rental_details.*.equipment_id' => 'nullable|exists:equipment,id',
+            'rental_details.*.rental_qty' => 'nullable',
+            'rental_details.*.price' => 'nullable',
             'equipment_brokens' => 'nullable|array',
             'equipment_brokens.*.equipment_id' => 'nullable|exists:equipment,id',
             'equipment_brokens.*.equipment_name' => 'nullable',
@@ -413,6 +413,7 @@ class RentalController extends Controller
 
         $rental->total_price = $validatedData['total_price'];
         $rental->payment_status = $validatedData['payment_status'];
+        $rental->status = $validatedData['status'];
         $rental->address = $validatedData['address'];
         $rental->is_shipping = $validatedData['is_shipping'];
         $rental->shipping_date = $validatedData['shipping_date'];
@@ -433,6 +434,8 @@ class RentalController extends Controller
 
         $rental->save(); // Update the rental information
 
+
+        if (array_key_exists('rental_details', $validatedData)) {
         // Delete existing rental details for this rental
         RentalDetail::where('rental_id', $rental->id)->delete();
 
@@ -446,6 +449,7 @@ class RentalController extends Controller
             ]);
             $rentalDetail->save();
         }
+    }
 
         if (array_key_exists('equipment_brokens', $validatedData)) {
             // Delete existing equipment brokens for this rental

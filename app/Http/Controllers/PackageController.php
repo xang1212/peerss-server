@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipment;
 use App\Models\Package;
 use App\Models\PackageEquipment;
 use App\Models\PackageFood;
@@ -115,13 +116,77 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // public function show($id)
+    // {
+    //     $package = Package::find($id);
+
+    //     $package->load('package_equipment', 'package_food');
+
+    //     return $package;
+    // }
+
     public function show($id)
     {
-        $package = Package::find($id);
+        $rental = Package::find($id);
+    
+        $rentalDetails = PackageEquipment::where('package_id', $id)->get();
+    
+        $equipmentIds = $rentalDetails->pluck('equipment_id');
+    
+        $equipments = Equipment::whereIn('id', $equipmentIds)->get();
 
-        $package->load('package_equipment', 'package_food');
+    
+        $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
+            $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+    
+            return [
+                'id' => $equipment->id,
+                'name' => $equipment->name,
+                'category' => $equipment->category,
+                'description' => $equipment->description,
+                'qty' => $rentalDetail->rental_qty,
+                'price' => $rentalDetail->price,
+                'broken_price' => $equipment->broken_price,
+                'unit' => $equipment->unit,
+                'images' => $equipment->images,
+                'created_at' => $equipment->created_at,
+                'updated_at' => $equipment->updated_at,
+            ];
+        });
 
-        return $package;
+        $packageFoods = PackageFood::where('package_id', $id)->get();
+    
+        $foodIds = $packageFoods->pluck('food_id');
+    
+        $foods = Equipment::whereIn('id', $foodIds)->get();
+
+        $formattedFoods = $foods->map(function ($food) use ($packageFoods) {
+            $packageFoods->firstWhere('food_id', $food->id);
+    
+            return [
+                'id' => $food->id,
+                'name' => $food->name,
+                'unit' => $food->unit,
+                'created_at' => $food->created_at,
+                'updated_at' => $food->updated_at,
+            ];
+        });
+    
+        $output = [
+            'id' => $rental->id,
+            'name' => $rental->name,
+            'desc' => $rental->idescd,
+            'card_qty' => $rental->card_qty,
+            'images' => $rental->images,
+            'equipments' => $formattedEquipments,
+            'foods' => $formattedFoods,
+            'created_at' => $rental->created_at,
+            'updated_at' => $rental->updated_at,
+        ];
+    
+        return response()->json($output);
+
+
     }
 
     /**
