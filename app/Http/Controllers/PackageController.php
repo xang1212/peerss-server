@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\Food;
 use App\Models\Package;
 use App\Models\PackageEquipment;
 use App\Models\PackageFood;
@@ -158,7 +159,7 @@ class PackageController extends Controller
     
         $foodIds = $packageFoods->pluck('food_id');
     
-        $foods = Equipment::whereIn('id', $foodIds)->get();
+        $foods = Food::whereIn('id', $foodIds)->get();
 
         $formattedFoods = $foods->map(function ($food) use ($packageFoods) {
             $packageFoods->firstWhere('food_id', $food->id);
@@ -167,6 +168,7 @@ class PackageController extends Controller
                 'id' => $food->id,
                 'name' => $food->name,
                 'unit' => $food->unit,
+                'image' => $food->image,
                 'created_at' => $food->created_at,
                 'updated_at' => $food->updated_at,
             ];
@@ -198,7 +200,89 @@ class PackageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'desc' => 'nullable|string',
+            'price' => 'required|numeric',
+            'card_qty' => 'required|numeric',
+            'images.*' => 'nullable|image',
+
+            'package_equipment' => 'nullable|array',
+            'package_equipment.*.equipment_id' => 'nullable|exists:equipment,id',
+            'package_equipment.*.equipment_name' => 'nullable',
+            'package_equipment.*.package_qty' => 'nullable',
+
+            'package_food' => 'nullable|array',
+            'package_food.*.food_id' => 'nullable|exists:food,id',
+            'package_food.*.food_name' => 'nullable',
+        ]);
+
+        $rental = Package::findOrFail($id); // Find the existing rental by ID
+
+        $rental->name = $validatedData['name'];
+        $rental->desc = $validatedData['desc'];
+        $rental->price = $validatedData['price'];
+        $rental->card_qty = $validatedData['card_qty'];
+
+
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+    
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('images', 'public');
+                $imagePaths[] = $path;
+            }
+            $imagePathsString = '[' . implode(',', $imagePaths) . ']';
+            $rental['images'] = $imagePathsString;
+        }
+
+        $rental->save(); // Update the rental information
+
+
+        if (array_key_exists('package_equipment', $validatedData)) {
+        // Delete existing rental details for this rental
+        PackageEquipment::where('package_id', $rental->id)->delete();
+
+        $rentalDetails = $validatedData['package_equipment'];
+        foreach ($rentalDetails as $detail) {
+            $rentalDetail = new PackageEquipment([
+                'package_id' => $rental->id,
+                'equipment_id' => $detail["equipment_id"],
+                'equipment_name' => $detail['equipment_name'],
+                'package_qty' => $detail['package_qty'],
+            ]);
+            $rentalDetail->save();
+        }
+    }
+
+        if (array_key_exists('package_food', $validatedData)) {
+            // Delete existing equipment brokens for this rental
+            PackageFood::where('package_id', $rental->id)->delete();
+
+            $EquipmentBrokens = $validatedData['package_food'];
+            foreach ($EquipmentBrokens as $detail) {
+                $EquipmentBroken = new PackageFood([
+                    'package_id' => $rental->id,
+                    'food_id' => $detail["food_id"],
+                    'food_name' => $detail["food_name"],
+                ]);
+                $EquipmentBroken->save();
+            }
+            $rental->load('package_equipment', 'package_food');
+        }
+
+        else {
+            $rental->load('package_equipment'); // Only load the updated rental details
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'rental updated', 'rental' => $rental]);
+    } catch (Throwable $th) {
+        DB::rollBack();
+        throw $th;
+    }
     }
 
     /**

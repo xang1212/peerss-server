@@ -73,6 +73,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::post('/package/insert',[PackageController::class,'store']);
     Route::get('/package/sel-all',[PackageController::class,'index']);
     Route::get('/package/sel-one/{id}',[PackageController::class,'show']);
+    Route::put('/package/update/{id}',[PackageController::class,'update']);
 
     // Route::put('/rental/update-address/{id}',[PackageController::class,'updateAddress']);
     // Route::put('/rental/update-all/{id}',[PackageController::class,'update']);
