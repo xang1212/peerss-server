@@ -128,23 +128,23 @@ class PackageController extends Controller
 
     public function show($id)
     {
-        $rental = Package::find($id);
+        $package = Package::find($id);
     
-        $rentalDetails = PackageEquipment::where('package_id', $id)->get();
+        $packageEquipments = PackageEquipment::where('package_id', $id)->get();
     
-        $equipmentIds = $rentalDetails->pluck('equipment_id');
+        $equipmentIds = $packageEquipments->pluck('equipment_id');
     
         $equipments = Equipment::whereIn('id', $equipmentIds)->get();
 
     
-        $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
-            $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+        $formattedEquipments = $equipments->map(function ($equipment) use ($packageEquipments) {
+            $packageEquipment = $packageEquipments->firstWhere('equipment_id', $equipment->id);
     
             return [
                 'id' => $equipment->id,
                 'name' => $equipment->name,
                 'category' => $equipment->category,
-                'package_qty' => $rentalDetail->package_qty,
+                'package_qty' => $packageEquipment->package_qty,
                 'broken_price' => $equipment->broken_price,
                 'unit' => $equipment->unit,
                 'images' => $equipment->images,
@@ -173,16 +173,16 @@ class PackageController extends Controller
         });
     
         $output = [
-            'id' => $rental->id,
-            'name' => $rental->name,
-            'desc' => $rental->desc,
-            'price' => $rental->price,
-            'card_qty' => $rental->card_qty,
-            'images' => $rental->images,
+            'id' => $package->id,
+            'name' => $package->name,
+            'desc' => $package->desc,
+            'price' => $package->price,
+            'card_qty' => $package->card_qty,
+            'images' => $package->images,
             'equipments' => $formattedEquipments,
             'foods' => $formattedFoods,
-            'created_at' => $rental->created_at,
-            'updated_at' => $rental->updated_at,
+            'created_at' => $package->created_at,
+            'updated_at' => $package->updated_at,
         ];
     
         return response()->json($output);
@@ -292,6 +292,6 @@ class PackageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Package::destroy($id);
     }
 }

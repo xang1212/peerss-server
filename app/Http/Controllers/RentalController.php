@@ -573,6 +573,6 @@ class RentalController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Rental::destroy($id);
     }
 }

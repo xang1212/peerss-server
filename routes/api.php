@@ -67,6 +67,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/rental/sel-one/{id}',[RentalController::class,'show']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update/{id}',[RentalController::class,'update']);
+    Route::delete('/rental/delete/{id}',[RentalController::class,'destroy']);
     //Route::put('/rental/update-eq-broken/{id}',[RentalController::class,'update_eq_broken']);
 
     //package 
@@ -74,6 +75,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/package/sel-all',[PackageController::class,'index']);
     Route::get('/package/sel-one/{id}',[PackageController::class,'show']);
     Route::put('/package/update/{id}',[PackageController::class,'update']);
+    Route::delete('/package/delete/{id}',[PackageController::class,'destroy']);
 
     // Route::put('/rental/update-address/{id}',[PackageController::class,'updateAddress']);
     // Route::put('/rental/update-all/{id}',[PackageController::class,'update']);

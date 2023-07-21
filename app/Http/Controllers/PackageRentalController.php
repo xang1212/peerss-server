@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PackageRental;
 use Illuminate\Http\Request;
 
 class PackageRentalController extends Controller
@@ -58,6 +59,6 @@ class PackageRentalController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return PackageRental::destroy($id);
     }
 }

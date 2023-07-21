@@ -16,9 +16,9 @@ class CreateRentalDetailsTable extends Migration
         Schema::create('rental_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('rental_id');
-            $table->foreign('rental_id')->references('id')->on('rentals');
+            $table->foreign('rental_id')->references('id')->on('rentals')->onDelete('cascade');
             $table->unsignedBigInteger('equipment_id');
-            $table->foreign('equipment_id')->references('id')->on('equipment');
+            $table->foreign('equipment_id')->references('id')->on('equipment')->onDelete('cascade');
             $table->integer('rental_qty');
             $table->decimal('price');
             $table->timestamps();

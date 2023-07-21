@@ -91,3 +91,7 @@
 // get one rental
     get http://127.0.0.1:8000/api/rental/sel-one/{id}
     token: yes
+
+// delete rental
+    delete http://127.0.0.1:8000/api/rental/delete/{id}
+    token: yes

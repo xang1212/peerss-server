@@ -187,14 +187,6 @@ class EquipmentController extends Controller
      */
     public function destroy($id)
     {
-        $equipment = Equipment::find($id);
-
-        
-        if($equipment->image){
-            unlink( 'storage/'.$equipment->image);
-        }
-        $equipment->delete();
-
-        return response()->json(['message' => 'ລົບອຸປະກອນສຳເລັດ'], 201);
+        return Equipment::destroy($id);
     }
 }

@@ -16,7 +16,7 @@ class CreateRentalsTable extends Migration
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('payment_status',['HALF','FULL'],50)->default('HALF');
             $table->enum('status',['PENDING','APPROVED','DENINED','CANCEL'],50)->default('PENDING');
             $table->string('address',255)->nullable();

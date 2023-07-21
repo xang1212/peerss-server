@@ -16,9 +16,9 @@ class CreateEquipmentBrokensTable extends Migration
         Schema::create('equipment_brokens', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('rental_id');
-            $table->foreign('rental_id')->references('id')->on('rentals');
+            $table->foreign('rental_id')->references('id')->on('rentals')->onDelete('cascade');
             $table->unsignedBigInteger('equipment_id');
-            $table->foreign('equipment_id')->references('id')->on('equipment');
+            $table->foreign('equipment_id')->references('id')->on('equipment')->onDelete('cascade');
             $table->string('equipment_name',100);
             $table->integer('broken_qty');
             $table->decimal('broken_price',8,2);
