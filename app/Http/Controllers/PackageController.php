@@ -176,6 +176,7 @@ class PackageController extends Controller
             'id' => $rental->id,
             'name' => $rental->name,
             'desc' => $rental->desc,
+            'price' => $rental->price,
             'card_qty' => $rental->card_qty,
             'images' => $rental->images,
             'equipments' => $formattedEquipments,
@@ -243,15 +244,15 @@ class PackageController extends Controller
         // Delete existing rental details for this rental
         PackageEquipment::where('package_id', $package->id)->delete();
 
-        $rentalDetails = $validatedData['package_equipment'];
-        foreach ($rentalDetails as $detail) {
-            $rentalDetail = new PackageEquipment([
+        $packageEquipments = $validatedData['package_equipment'];
+        foreach ($packageEquipments as $detail) {
+            $packageEquipment = new PackageEquipment([
                 'package_id' => $package->id,
                 'equipment_id' => $detail["equipment_id"],
                 'equipment_name' => $detail['equipment_name'],
                 'package_qty' => $detail['package_qty'],
             ]);
-            $rentalDetail->save();
+            $packageEquipment->save();
         }
     }
 
@@ -259,14 +260,14 @@ class PackageController extends Controller
             // Delete existing equipment brokens for this rental
             PackageFood::where('package_id', $package->id)->delete();
 
-            $EquipmentBrokens = $validatedData['package_food'];
-            foreach ($EquipmentBrokens as $detail) {
-                $EquipmentBroken = new PackageFood([
+            $packageFoods = $validatedData['package_food'];
+            foreach ($packageFoods as $detail) {
+                $packageFood = new PackageFood([
                     'package_id' => $package->id,
                     'food_id' => $detail["food_id"],
                     'food_name' => $detail["food_name"],
                 ]);
-                $EquipmentBroken->save();
+                $packageFood->save();
             }
             $package->load('package_equipment', 'package_food');
         }
