@@ -84,12 +84,51 @@
         ]
     }
 
+// update status
+    post http://127.0.0.1:8000/api/rental/update-status/{id}
+    token: yes
+
+    example:
+{
+    "status": "yes",
+    "_method": "put"
+}
+
+// update shipping
+    post http://127.0.0.1:8000/api/rental/update-shipping/{id}
+    token: yes
+
+    example:
+{
+    "is_shipping": "yes",
+    "_method": "put"
+}
+
+// update picking
+    post http://127.0.0.1:8000/api/rental/update-picking/{id}
+    token: yes
+
+    example:
+{
+    "is_picking": "yes",
+    "_method": "put"
+}
+
+
 // get all rental
     get http://127.0.0.1:8000/api/rental/sel-all
     token: yes
 
 // get one rental
     get http://127.0.0.1:8000/api/rental/sel-one/{id}
+    token: yes
+
+// get all shipping
+    get http://127.0.0.1:8000/api/rental/sel-all-shipping
+    token: yes
+
+// get all picking
+    get http://127.0.0.1:8000/api/rental/sel-all-picking
     token: yes
 
 // delete rental

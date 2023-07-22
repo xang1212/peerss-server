@@ -77,6 +77,24 @@ class RentalController extends Controller
 
     }
 
+    public function sel_pending()
+    {
+        return Rental::where('status','PENDING')->get();
+    }
+
+    public function sel_shipping()
+    {
+        return Rental::where('status', 'PENDING')
+        ->where('is_shipping', 'NO')
+        ->get();
+    }
+
+    public function sel_picking()
+    {
+        return Rental::where('status', 'PENDING')
+        ->where('is_shipping', 'YES')
+        ->get();
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -90,19 +108,7 @@ class RentalController extends Controller
             $user = Auth::user(); // get the authenticated user
     
             $validatedData = $request->validate([
-                // 'total_price' => 'required|numeric',
-                // 'address' => 'nullable|string',
-                // 'is_shipping' => 'nullable',
-                // 'shipping_date' => 'nullable',
-                // 'is_picking' => 'nullable',
-                // 'picking_date' => 'nullable',
-                // 'reciept_half_image' => 'nullable',
-                // 'reciept_full_image' => 'nullable',
-                // 'total_broken_price' => 'numeric',
-                // 'rental_details' => 'required|array',
-                // 'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-                // 'rental_details.*.rental_qty' => 'required',
-                // 'rental_details.*.price' => 'required',
+
 
                 'total_price' => 'required|numeric',
                 'address' => 'required|string',
@@ -110,22 +116,13 @@ class RentalController extends Controller
                 'picking_date' => 'required',
                 'receipt_half_image' => 'required',
                 'receipt_full_image' => 'nullable',
-                'total_broken_price' => 'numeric',
+                'total_broken_price' => 'numeric|nullable',
                 'rental_details' => 'required|array',
                 'rental_details.*.equipment_id' => 'required|exists:equipment,id',
                 'rental_details.*.rental_qty' => 'required',
                 'rental_details.*.price' => 'required',
             ]);
     
-            // $rental = new Rental([
-            //     'user_id' => $user->id,
-            //     'total_price' => $validatedData['total_price'],
-            //     'address' => $validatedData['address'],
-            //     'shipping_date' => $validatedData['shipping_date'],
-            //     'picking_date' => $validatedData['picking_date'],
-            // ]);
-
-            // $rental->save();
 
             $rental = [
                 'user_id' => $user->id,
@@ -171,19 +168,6 @@ class RentalController extends Controller
             //$user = Auth::user(); // get the authenticated user
     
             $validatedData = $request->validate([
-                // 'total_price' => 'required|numeric',
-                // 'address' => 'nullable|string',
-                // 'is_shipping' => 'nullable',
-                // 'shipping_date' => 'nullable',
-                // 'is_picking' => 'nullable',
-                // 'picking_date' => 'nullable',
-                // 'reciept_half_image' => 'nullable',
-                // 'reciept_full_image' => 'nullable',
-                // 'total_broken_price' => 'numeric',
-                // 'rental_details' => 'required|array',
-                // 'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-                // 'rental_details.*.rental_qty' => 'required',
-                // 'rental_details.*.price' => 'required',
 
                 'user_id' => 'required|exists:users,id',
                 'total_price' => 'required|numeric',
@@ -199,15 +183,6 @@ class RentalController extends Controller
                 'rental_details.*.price' => 'required',
             ]);
     
-            // $rental = new Rental([
-            //     'user_id' => $user->id,
-            //     'total_price' => $validatedData['total_price'],
-            //     'address' => $validatedData['address'],
-            //     'shipping_date' => $validatedData['shipping_date'],
-            //     'picking_date' => $validatedData['picking_date'],
-            // ]);
-
-            // $rental->save();
 
             $rental = [
                 'user_id' => $validatedData['user_id'],
@@ -305,15 +280,9 @@ class RentalController extends Controller
     
         return response()->json($output);
 
-
     }
 
 
-    public function getDistrict()
-    {
-        $district = Rental::with(['rental_detail'])->get();
-        return response()->json($district);
-    }
     /**
      * Update the specified resource in storage.
      *
@@ -481,6 +450,51 @@ class RentalController extends Controller
     }
 }
 
+
+public function update_status(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|string',
+    ]);
+
+    $status = [
+        'status' => $request ->status,
+    ];
+    $statusInst = Rental::find($id);
+
+    $statusInst->update($status);
+    return $status;
+}
+
+public function update_shipping(Request $request, $id)
+{
+    $request->validate([
+        'is_shipping' => 'required|string',
+    ]);
+
+    $shipping = [
+        'is_shipping' => $request ->is_shipping,
+    ];
+    $shippingInst = Rental::find($id);
+
+    $shippingInst->update($shipping);
+    return $shipping;
+}
+
+public function update_picking(Request $request, $id)
+{
+    $request->validate([
+        'is_picking' => 'required|string',
+    ]);
+
+    $picking = [
+        'is_picking' => $request ->is_picking,
+    ];
+    $pickingInst = Rental::find($id);
+
+    $pickingInst->update($picking);
+    return $picking;
+}
 
     // public function update(Request $request, $id)
     // {

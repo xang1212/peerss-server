@@ -1,0 +1,14 @@
+// insert package rental
+    post http://127.0.0.1:8000/api/package-rental/insert
+    token: yes
+    example:
+{
+    "user_id": 1,
+    "package_id": "1",
+    "total_price": "121",
+    "shipping_date": "2023-07-21",
+    "picking_date": "2023-07-21",
+    "address": "aaa",
+    "receipt_half_image": "images/qOiqA1K22jYXwfmJzsrgFJkMjNtKVF2QxDQPFj34.jpg",
+    "id": 1
+}

@@ -3,6 +3,7 @@
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PackageRentalController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\UserController;
 use App\Models\Equipment;
@@ -65,10 +66,19 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::post('/rental/walk-in',[RentalController::class,'walk_in']);
     Route::get('/rental/sel-all',[RentalController::class,'index']);
     Route::get('/rental/sel-one/{id}',[RentalController::class,'show']);
+    Route::get('/rental/sel-all-pending',[RentalController::class,'sel_pending']);
+    Route::get('/rental/sel-all-shipping',[RentalController::class,'sel_shipping']);
+    Route::get('/rental/sel-all-picking',[RentalController::class,'sel_picking']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update/{id}',[RentalController::class,'update']);
+    Route::put('/rental/update-status/{id}',[RentalController::class,'update_status']);
+    Route::put('/rental/update-shipping/{id}',[RentalController::class,'update_shipping']);
+    Route::put('/rental/update-picking/{id}',[RentalController::class,'update_picking']);
     Route::delete('/rental/delete/{id}',[RentalController::class,'destroy']);
     //Route::put('/rental/update-eq-broken/{id}',[RentalController::class,'update_eq_broken']);
+
+    // package rental
+    Route::post('/package-rental/insert',[PackageRentalController::class,'store']);
 
     //package 
     Route::post('/package/insert',[PackageController::class,'store']);

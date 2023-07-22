@@ -32,48 +32,7 @@ class EquipmentController extends Controller
      */
     public function store(Request $request)
     { 
-    // $request->validate([
-    //     'name' => 'required|string',
-    //     'category' => 'required|string',
-    //     'desc' => 'nullable|string',
-    //     'qty' => 'nullable|numeric',
-    //     'price' => 'required|numeric',
-    //     'broken_price' => 'required|numeric',
-    //     'unit' => 'nullable|string',
-    //     'images' => 'nullable|array',
-    //     'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-    // ]);
 
-    // $equipment = new Equipment([
-    //     'name' => $request->name,
-    //     'category' => $request->category,
-    //     'desc' => $request->desc,
-    //     'qty' => $request->qty,
-    //     'price' => $request->price,
-    //     'broken_price' => $request->broken_price,
-    //     'unit' => $request->unit,
-    //     'images' => []
-    // ]);
-
-    // $equipment->save();
-
-    // if ($request->hasFile('images')) {
-    //     $images = $request->file('images');
-    //     $imageNames = [];
-
-    //     foreach ($images as $image) {
-    //         $imageName = time() . '-' . $image->getClientOriginalName();
-    //         $image->move(public_path('images'), $imageName);
-    //         $imageNames[] = $imageName;
-    //     }
-
-    //     $equipment->images = $imageNames;
-    //     $equipment->save();
-    // }
-
-    // return response()->json(['message' => 'Product created successfully'], 201);
-
-    ///////////////////////////////////
     $request->validate([
         'name' => 'required|string',
         'category' => 'required|string',
