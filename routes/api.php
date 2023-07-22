@@ -65,6 +65,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::post('/rental/insert',[RentalController::class,'store']);
     Route::post('/rental/walk-in',[RentalController::class,'walk_in']);
     Route::get('/rental/sel-all',[RentalController::class,'index']);
+    Route::get('/rental/by-user/{user_id}', [RentalController::class, 'getRentalsByUserId']);
     Route::get('/rental/sel-one/{id}',[RentalController::class,'show']);
     Route::get('/rental/sel-all-pending',[RentalController::class,'sel_pending']);
     Route::get('/rental/sel-all-shipping',[RentalController::class,'sel_shipping']);
