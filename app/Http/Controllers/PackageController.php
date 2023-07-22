@@ -110,6 +110,13 @@ class PackageController extends Controller
             throw $th;
     }
 }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
 
     /**
      * Display the specified resource.
@@ -117,6 +124,22 @@ class PackageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+     public function getPackagesByFoodId($foodId)
+     {
+         try {
+             $packages = Package::whereHas('package_food', function ($query) use ($foodId) {
+                 $query->where('food_id', $foodId);
+             })->get();
+     
+     
+             return response()->json($packages);
+         } catch (Throwable $th) {
+             return response()->json(['message' => 'Error retrieving packages.', 'error' => $th->getMessage()], 500);
+         }
+     }
+     
+
     // public function show($id)
     // {
     //     $package = Package::find($id);
