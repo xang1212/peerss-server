@@ -79,21 +79,174 @@ class RentalController extends Controller
 
     public function sel_pending()
     {
-        return Rental::where('status','PENDING')->get();
+        $rentals = Rental::where('status','PENDING')->get();
+            
+        $output = $rentals->map(function ($rental) {
+            $customer = User::find($rental->user_id);
+    
+            $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
+    
+            $equipmentIds = $rentalDetails->pluck('equipment_id');
+    
+            $equipments = Equipment::whereIn('id', $equipmentIds)->get();
+    
+            $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
+                $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+    
+                return [
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'category' => $equipment->category,
+                    'description' => $equipment->description,
+                    'qty' => $rentalDetail->rental_qty,
+                    'price' => $rentalDetail->price,
+                    'broken_price' => $equipment->broken_price,
+                    'unit' => $equipment->unit,
+                    'images' => $equipment->images,
+                    'created_at' => $equipment->created_at,
+                    'updated_at' => $equipment->updated_at,
+                ];
+            });
+    
+            return [
+                'id' => $rental->id,
+                'user_id' => $rental->user_id,
+                'customer' => $customer,
+                'payment_status' => $rental->payment_status,
+                'status' => $rental->status,
+                'address' => $rental->address,
+                'is_shipping' => $rental->is_shipping,
+                'shipping_date' => $rental->shipping_date,
+                'is_picking' => $rental->is_picking,
+                'picking_date' => $rental->picking_date,
+                'type' => $rental->type,
+                'total_price' => floatval($rental->total_price),
+                'total_broken_price' => $rental->total_broken_price,
+                'receipt_half_image' => $rental->receipt_half_image,
+                'receipt_full_image' => $rental->receipt_full_image,
+                'equipments' => $formattedEquipments,
+                'created_at' => $rental->created_at,
+                'updated_at' => $rental->updated_at,
+            ];
+        });
+    
+        return response()->json($output);
     }
 
     public function sel_shipping()
     {
-        return Rental::where('status', 'PENDING')
+        $rentals = Rental::where('status', 'PENDING')
         ->where('is_shipping', 'NO')
         ->get();
+
+        $output = $rentals->map(function ($rental) {
+            $customer = User::find($rental->user_id);
+    
+            $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
+    
+            $equipmentIds = $rentalDetails->pluck('equipment_id');
+    
+            $equipments = Equipment::whereIn('id', $equipmentIds)->get();
+    
+            $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
+                $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+    
+                return [
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'category' => $equipment->category,
+                    'description' => $equipment->description,
+                    'qty' => $rentalDetail->rental_qty,
+                    'price' => $rentalDetail->price,
+                    'broken_price' => $equipment->broken_price,
+                    'unit' => $equipment->unit,
+                    'images' => $equipment->images,
+                    'created_at' => $equipment->created_at,
+                    'updated_at' => $equipment->updated_at,
+                ];
+            });
+    
+            return [
+                'id' => $rental->id,
+                'user_id' => $rental->user_id,
+                'customer' => $customer,
+                'payment_status' => $rental->payment_status,
+                'status' => $rental->status,
+                'address' => $rental->address,
+                'is_shipping' => $rental->is_shipping,
+                'shipping_date' => $rental->shipping_date,
+                'is_picking' => $rental->is_picking,
+                'picking_date' => $rental->picking_date,
+                'type' => $rental->type,
+                'total_price' => floatval($rental->total_price),
+                'total_broken_price' => $rental->total_broken_price,
+                'receipt_half_image' => $rental->receipt_half_image,
+                'receipt_full_image' => $rental->receipt_full_image,
+                'equipments' => $formattedEquipments,
+                'created_at' => $rental->created_at,
+                'updated_at' => $rental->updated_at,
+            ];
+        });
+    
+        return response()->json($output);
     }
 
     public function sel_picking()
     {
-        return Rental::where('status', 'PENDING')
+        $rental = Rental::where('status', 'PENDING')
         ->where('is_shipping', 'YES')
         ->get();
+
+        $output = $rentals->map(function ($rental) {
+            $customer = User::find($rental->user_id);
+    
+            $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
+    
+            $equipmentIds = $rentalDetails->pluck('equipment_id');
+    
+            $equipments = Equipment::whereIn('id', $equipmentIds)->get();
+    
+            $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
+                $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+    
+                return [
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'category' => $equipment->category,
+                    'description' => $equipment->description,
+                    'qty' => $rentalDetail->rental_qty,
+                    'price' => $rentalDetail->price,
+                    'broken_price' => $equipment->broken_price,
+                    'unit' => $equipment->unit,
+                    'images' => $equipment->images,
+                    'created_at' => $equipment->created_at,
+                    'updated_at' => $equipment->updated_at,
+                ];
+            });
+    
+            return [
+                'id' => $rental->id,
+                'user_id' => $rental->user_id,
+                'customer' => $customer,
+                'payment_status' => $rental->payment_status,
+                'status' => $rental->status,
+                'address' => $rental->address,
+                'is_shipping' => $rental->is_shipping,
+                'shipping_date' => $rental->shipping_date,
+                'is_picking' => $rental->is_picking,
+                'picking_date' => $rental->picking_date,
+                'type' => $rental->type,
+                'total_price' => floatval($rental->total_price),
+                'total_broken_price' => $rental->total_broken_price,
+                'receipt_half_image' => $rental->receipt_half_image,
+                'receipt_full_image' => $rental->receipt_full_image,
+                'equipments' => $formattedEquipments,
+                'created_at' => $rental->created_at,
+                'updated_at' => $rental->updated_at,
+            ];
+        });
+    
+        return response()->json($output);
     }
     /**
      * Store a newly created resource in storage.
