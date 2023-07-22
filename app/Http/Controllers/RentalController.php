@@ -135,7 +135,7 @@ class RentalController extends Controller
 
     public function sel_shipping()
     {
-        $rentals = Rental::where('status', 'PENDING')
+        $rentals = Rental::where('status', 'APPROVED')
         ->where('is_shipping', 'NO')
         ->get();
 
@@ -193,7 +193,7 @@ class RentalController extends Controller
 
     public function sel_picking()
     {
-        $rental = Rental::where('status', 'PENDING')
+        $rentals = Rental::where('status', 'APPROVED')
         ->where('is_shipping', 'YES')
         ->get();
 
@@ -409,6 +409,24 @@ class RentalController extends Controller
                 'updated_at' => $equipment->updated_at,
             ];
         });
+
+        $equipmentBrokens = EquipmentBroken::where('rental_id', $id)->get();
+
+        $formattedEquipmentBrokens = $equipmentBrokens->map(function ($equipmentBroken) {
+            $equipment = Equipment::find($equipmentBroken->equipment_id);
+    
+            return [
+                'id' => $equipmentBroken->id,
+                'rental_id' => $equipmentBroken->rental_id,
+                'equipment_id' => $equipmentBroken->equipment_id,
+                'equipment_name' => $equipment->name,
+                'equipment_images' => $equipment->images,
+                'broken_qty' => $equipmentBroken->broken_qty,
+                'broken_price' => $equipmentBroken->broken_price,
+                'created_at' => $equipmentBroken->created_at,
+                'updated_at' => $equipmentBroken->updated_at,
+            ];
+        });
     
         $output = [
             'id' => $rental->id,
@@ -427,6 +445,7 @@ class RentalController extends Controller
             'receipt_half_image' => $rental->receipt_half_image,
             'receipt_full_image' => $rental->receipt_full_image,
             'equipments' => $formattedEquipments,
+            'equipment_brokens' => $formattedEquipmentBrokens,
             'created_at' => $rental->created_at,
             'updated_at' => $rental->updated_at,
         ];
