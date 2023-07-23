@@ -3,10 +3,38 @@
     token: yes
     example:
     {
-    "total_price":1000,
+    "total_price": "1123",
     "address": "aaa,aaa,aaa",
-    "shipping_date": "2023-07-14",
-    "picking_date": "2023-07-14",
+    "shipping_date": "2023-08-17",
+    "picking_date": "2023-08-19",
+    "receipt_half_image": "images/profile_1690139684.png",
+    "rental_details":[{
+        "equipment_id":1,
+        "rental_qty":2,
+        "price":100
+    },
+    {
+        "equipment_id":2,
+        "rental_qty":2,
+        "price":100
+    },
+    {
+        "equipment_id":4,
+        "rental_qty":7,
+        "price":100
+    }]
+}
+
+// insert rental
+    post http://127.0.0.1:8000/api/rental/app-insert
+    token: yes
+    example:
+    {
+    "total_price": "1123",
+    "address": "aaa,aaa,aaa",
+    "shipping_date": "2023-08-17",
+    "picking_date": "2023-08-19",
+    "receipt_half_image": "base64",
     "rental_details":[{
         "equipment_id":1,
         "rental_qty":2,

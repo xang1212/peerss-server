@@ -47,6 +47,25 @@
         "_method": "put",
     }
 
+// update user on app
+    post http://127.0.0.1:8000/api/user/app-update/{id}
+    token: yes
+
+    example:
+    {
+        "first_name": "aaa",
+        "last_name": "aaa",
+        "gender": "MALE",
+        "responsibility": "aaa",
+        "address": "aaa",
+        "role": "EMPLOYEE",
+        "status": "INACTIVE",
+        "phone_number": "55555555",
+        "profile_image": "base64",
+        "password": "12345678",
+        "_method": "put",
+    }
+
 // login
     post http://127.0.0.1:8000/api/login
 

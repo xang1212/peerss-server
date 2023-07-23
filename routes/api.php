@@ -42,9 +42,10 @@ Route::get('/package/sel-one/{id}',[PackageController::class,'show']);
 
 Route::group(['middleware'=>['auth:sanctum']], function () {
 
-    // User
+    // User 
     Route::post('/logout',[UserController::class,'logout']);
     Route::put('/user/update/{id}',[UserController::class,'update']);
+    Route::put('/user/app-update/{id}',[UserController::class,'updateUserAppClient']);
     Route::get('/user/sel-all',[UserController::class,'selAll']);
     Route::get('/user/sel-employee-owner',[UserController::class,'selEmplyeeOwner']);
     Route::get('/user/sel-customer',[UserController::class,'selCUSTOMER']);
@@ -63,6 +64,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
 
     //rental 
     Route::post('/rental/insert',[RentalController::class,'store']);
+    Route::post('/rental/app-insert',[RentalController::class,'rental_app']);
     Route::post('/rental/walk-in',[RentalController::class,'walk_in']);
     Route::get('/rental/sel-all',[RentalController::class,'index']);
     Route::get('/rental/by-user/{user_id}', [RentalController::class, 'getRentalsByUserId']);

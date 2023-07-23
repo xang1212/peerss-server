@@ -489,13 +489,79 @@ class RentalController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Order created', 'order' => $rental]);
+            return response()->json(['message' => 'ການເຊົ່າສຳເລັດໝ ກະລຸນາລໍຖ້າພະນັກງານອະນຸມັດ', 'rental' => $rental]);
         }catch(Throwable $th){
             DB::rollBack();
             throw $th;
         }
+    }
+
+    public function rental_app(Request $request)
+    {
+        DB::beginTransaction();
+        try{
+            $user = Auth::user(); // get the authenticated user
+    
+            $validatedData = $request->validate([
 
 
+                'total_price' => 'required|numeric',
+                'address' => 'required|string',
+                'shipping_date' => 'required',
+                'picking_date' => 'required',
+                'receipt_half_image' => 'required',
+                'receipt_full_image' => 'nullable',
+                'total_broken_price' => 'numeric|nullable',
+                'rental_details' => 'required|array',
+                'rental_details.*.equipment_id' => 'required|exists:equipment,id',
+                'rental_details.*.rental_qty' => 'required',
+                'rental_details.*.price' => 'required',
+            ]);
+    
+
+            $rental = [
+                'user_id' => $user->id,
+                'total_price' => $validatedData['total_price'],
+                'address' => $validatedData['address'],
+                'shipping_date' => $validatedData['shipping_date'],
+                'picking_date' => $validatedData['picking_date'],
+            ];
+
+            if ($request->receipt_half_image) {
+                // Handle the base64 image data
+                $base64Image = $request->receipt_half_image;
+                $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+
+                $imageName = 'profile_' . time() . '.png'; // Generate a unique image name (you can change the extension based on your requirements)
+                $imagePath = 'public/images/' . $imageName;
+
+                // Save the decoded image data as a file in the storage
+                Storage::put($imagePath, $imageData);
+
+                // Set the profile image path in the user array
+                $rental['receipt_half_image'] = 'images/' . $imageName;
+            }
+           
+            $rental = Rental::create($rental);
+
+            $rentalDetails = $validatedData['rental_details'];
+            foreach ($rentalDetails as $detail) {
+                $rentalDetails = new RentalDetail([
+                    'rental_id' => $rental->id,
+                    'equipment_id' => $detail["equipment_id"],
+                    'rental_qty' => $detail['rental_qty'],
+                    'price' => $detail['price']
+                ]);
+                $rentalDetails->save();
+
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'ການເຊົ່າສຳເລັດໝ ກະລຸນາລໍຖ້າພະນັກງານອະນຸມັດ', 'rental' => $rental]);
+        }catch(Throwable $th){
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     public function walk_in(Request $request)

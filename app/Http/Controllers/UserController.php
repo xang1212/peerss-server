@@ -119,6 +119,58 @@ class UserController extends Controller
         return response($response, 201);
     }
 
+    public function updateUserAppClient(Request $request, $id)
+    {
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'gender' => 'required|string',
+            'responsibility' => 'nullable|string',
+            'address' => 'required|string',
+            'role' => 'required|string',
+            'status' => 'required|string',
+            'phone_number' => 'required|string',
+            'profile_image' => 'nullable|string', // Change the validation rule for the profile image
+        ]);
+    
+        $user = [
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'gender' => $request->gender,
+            'responsibility' => $request->responsibility,
+            'address' => $request->address,
+            'role' => $request->role,
+            'status' => $request->status,
+            'phone_number' => $request->phone_number,
+        ];
+    
+        if ($request->profile_image) {
+            // Handle the base64 image data
+            $base64Image = $request->profile_image;
+            $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+    
+            $imageName = 'profile_' . time() . '.png'; // Generate a unique image name (you can change the extension based on your requirements)
+            $imagePath = 'public/images/' . $imageName;
+    
+            // Save the decoded image data as a file in the storage
+            Storage::put($imagePath, $imageData);
+    
+            // Set the profile image path in the user array
+            $user['profile_image'] = 'images/' . $imageName;
+    
+            // Delete the old profile image if exists
+            $userInst = User::find($id);
+            if ($userInst && $userInst->profile_image && $userInst->profile_image !== $user['profile_image']) {
+                Storage::delete('public/' . $userInst->profile_image);
+            }
+        }
+    
+        $userInst = User::find($id);
+        $userInst->update($user);
+    
+        return $user;
+    }
+
     public function update(Request $request, $id)
     {
     //     $user = $request->user();
