@@ -18,7 +18,7 @@ class CreateRentalsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('payment_status',['HALF','FULL'],50)->default('HALF');
-            $table->enum('status',['PENDING','APPROVED','DENINED','CANCEL'],50)->default('PENDING');
+            $table->enum('status',['PENDING','APPROVED','DENIED','CANCEL'],50)->default('PENDING');
             $table->string('address',255)->nullable();
             $table->enum('is_shipping',['YES','NO'],50)->default('NO');
             $table->date('shipping_date')->nullable();

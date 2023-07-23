@@ -15,4 +15,9 @@ class RentalDetail extends Model
     {
         return $this->belongsTo(Rental::class);
     }
+
+    public function equipments()
+    {
+        return $this->belongsTo(Equipment::class);
+    }
 }

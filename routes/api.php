@@ -70,6 +70,8 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::get('/rental/sel-all-pending',[RentalController::class,'sel_pending']);
     Route::get('/rental/sel-all-shipping',[RentalController::class,'sel_shipping']);
     Route::get('/rental/sel-all-picking',[RentalController::class,'sel_picking']);
+    Route::get('/rental/sel-shipping-date/{shipping_date}',[RentalController::class,'sel_shipping_date']);
+    Route::get('/rental/sel-picking-date/{picking_date}',[RentalController::class,'sel_picking_date']);
     Route::put('/rental/update-address/{id}',[RentalController::class,'updateAddress']);
     Route::put('/rental/update/{id}',[RentalController::class,'update']);
     Route::put('/rental/update-status/{id}',[RentalController::class,'update_status']);

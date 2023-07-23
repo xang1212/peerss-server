@@ -131,6 +131,14 @@
     get http://127.0.0.1:8000/api/rental/sel-all-picking
     token: yes
 
+// get all shipping date
+    get http://127.0.0.1:8000/api/rental/sel-shipping-date/2023-07-14
+    token: yes
+
+// get all picking date
+    get http://127.0.0.1:8000/api/rental/sel-picking-date/2023-07-14
+    token: yes
+
 // delete rental
     delete http://127.0.0.1:8000/api/rental/delete/{id}
     token: yes
