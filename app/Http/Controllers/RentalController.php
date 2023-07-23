@@ -265,6 +265,7 @@ class RentalController extends Controller
     {
         $rentals = Rental::where('status', 'APPROVED')
         ->where('is_shipping', 'YES')
+        ->where('is_picking', 'NO')
         ->get();
 
         $output = $rentals->map(function ($rental) {
