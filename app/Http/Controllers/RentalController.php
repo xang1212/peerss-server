@@ -671,6 +671,7 @@ class RentalController extends Controller
                 'equipment_id' => $equipmentBroken->equipment_id,
                 'equipment_name' => $equipment->name,
                 'equipment_images' => $equipment->images,
+                'equipment_unit' => $equipment->unit,
                 'broken_qty' => $equipmentBroken->broken_qty,
                 'broken_price' => $equipmentBroken->broken_price,
                 'created_at' => $equipmentBroken->created_at,
@@ -1011,4 +1012,10 @@ public function update_picking(Request $request, $id)
     {
         return Rental::destroy($id);
     }
+
+    public function eqm_bk_delete($id)
+    {
+        return EquipmentBroken::destroy($id);
+    }
 }
+ 

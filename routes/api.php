@@ -94,6 +94,8 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::delete('/package/delete/{id}',[PackageController::class,'destroy']);
 
     // Route::put('/rental/update-address/{id}',[PackageController::class,'updateAddress']);
-    // Route::put('/rental/update-all/{id}',[PackageController::class,'update']);
+    // Route::put('/rental/update-all/{id}',[PackageController::class,'update']); eqm_bk_delete
+
+    Route::delete('/equipment-broken/delete/{id}',[RentalController::class,'eqm_bk_delete']);
 
 });

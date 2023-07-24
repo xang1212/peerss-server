@@ -170,3 +170,7 @@
 // delete rental
     delete http://127.0.0.1:8000/api/rental/delete/{id}
     token: yes
+
+// delete equipment broken
+    delete http://127.0.0.1:8000/api/equipment-broken/delete/{id}
+    token: yes
