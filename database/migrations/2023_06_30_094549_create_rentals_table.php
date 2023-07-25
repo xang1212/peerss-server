@@ -17,6 +17,8 @@ class CreateRentalsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('package_id')->nullable();
+            $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
             $table->enum('payment_status',['HALF','FULL'],50)->default('HALF');
             $table->enum('status',['PENDING','APPROVED','DENIED','CANCEL'],50)->default('PENDING');
             $table->string('address',255)->nullable();

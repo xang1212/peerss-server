@@ -84,6 +84,8 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
 
     // package rental
     Route::post('/package-rental/insert',[PackageRentalController::class,'store']);
+    Route::get('/package-rental/sel-all',[PackageRentalController::class,'index']);
+    Route::get('/package-rental/sel-one/{id}',[PackageRentalController::class,'show']);
 
     //package 
     Route::post('/package/insert',[PackageController::class,'store']);

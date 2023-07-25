@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\EquipmentBroken;
+use App\Models\Package;
 use App\Models\Rental;
 use App\Models\RentalDetail;
 use App\Models\User;
@@ -26,6 +27,8 @@ class RentalController extends Controller
     
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -55,6 +58,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -91,6 +96,7 @@ class RentalController extends Controller
             
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -120,6 +126,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -153,6 +161,7 @@ class RentalController extends Controller
             
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -182,6 +191,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -211,6 +222,7 @@ class RentalController extends Controller
 
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -240,6 +252,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -270,6 +284,7 @@ class RentalController extends Controller
 
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -299,6 +314,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -326,6 +343,7 @@ class RentalController extends Controller
             
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -355,6 +373,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -383,6 +403,7 @@ class RentalController extends Controller
             
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
+            $package = Package::find($rental->package_id);
     
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
     
@@ -412,6 +433,8 @@ class RentalController extends Controller
                 'id' => $rental->id,
                 'user_id' => $rental->user_id,
                 'customer' => $customer,
+                'package_id' => $rental->package_id,
+                'package' => $package,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -445,26 +468,28 @@ class RentalController extends Controller
             $user = Auth::user(); // get the authenticated user
     
             $validatedData = $request->validate([
-
-
+                'package_id' => 'nullable|exists:packages,id',
                 'total_price' => 'required|numeric',
                 'address' => 'required|string',
+                'type' => 'nullable|string',
                 'shipping_date' => 'required',
                 'picking_date' => 'required',
                 'receipt_half_image' => 'required',
                 'receipt_full_image' => 'nullable',
                 'total_broken_price' => 'numeric|nullable',
-                'rental_details' => 'required|array',
-                'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-                'rental_details.*.rental_qty' => 'required',
-                'rental_details.*.price' => 'required',
+                'rental_details' => 'nullable|array',
+                'rental_details.*.equipment_id' => 'nullable|exists:equipment,id',
+                'rental_details.*.rental_qty' => 'nullable',
+                'rental_details.*.price' => 'nullable',
             ]);
     
 
             $rental = [
                 'user_id' => $user->id,
+                'package_id' => $validatedData['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
+                'type' => $validatedData['type'],
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
@@ -476,6 +501,7 @@ class RentalController extends Controller
            
             $rental = Rental::create($rental);
 
+            if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
             foreach ($rentalDetails as $detail) {
                 $rentalDetails = new RentalDetail([
@@ -485,7 +511,7 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
-
+                }
             }
 
             DB::commit();
@@ -503,10 +529,10 @@ class RentalController extends Controller
             $user = Auth::user(); // get the authenticated user
     
             $validatedData = $request->validate([
-
-
+                'package_id' => 'nullable|exists:packages,id',
                 'total_price' => 'required|numeric',
                 'address' => 'required|string',
+                'type' => 'nullable|string',
                 'shipping_date' => 'required',
                 'picking_date' => 'required',
                 'receipt_half_image' => 'required',
@@ -521,8 +547,10 @@ class RentalController extends Controller
 
             $rental = [
                 'user_id' => $user->id,
+                'package_id' => $validatedData['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
+                'type' => $validatedData['type'],
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
@@ -573,8 +601,10 @@ class RentalController extends Controller
             $validatedData = $request->validate([
 
                 'user_id' => 'required|exists:users,id',
+                'package_id' => 'nullable|exists:packages,id',
                 'total_price' => 'required|numeric',
                 'address' => 'required|string',
+                'type' => 'nullable|string',
                 'shipping_date' => 'required',
                 'picking_date' => 'required',
                 'receipt_half_image' => 'required',
@@ -589,8 +619,10 @@ class RentalController extends Controller
 
             $rental = [
                 'user_id' => $validatedData['user_id'],
+                'package_id' => $validatedData['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
+                'type' => $validatedData['type'],
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
@@ -635,6 +667,7 @@ class RentalController extends Controller
         $rental = Rental::find($id);
     
         $customer = User::find($rental->user_id);
+        $package = Package::find($rental->package_id);
     
         $rentalDetails = RentalDetail::where('rental_id', $id)->get();
     
@@ -683,6 +716,8 @@ class RentalController extends Controller
             'id' => $rental->id,
             'user_id' => $rental->user_id,
             'customer' => $customer,
+            'package_id' => $rental->package_id,
+            'package' => $package,
             'payment_status' => $rental->payment_status,
             'status' => $rental->status,
             'address' => $rental->address,
@@ -778,6 +813,7 @@ class RentalController extends Controller
         //$user = Auth::user(); // get the authenticated user
 
         $validatedData = $request->validate([
+            'package_id' => 'nullable|exists:packages,id',
             'total_price' => 'required|numeric',
             'payment_status' => 'nullable',
             'status' => 'nullable',
@@ -803,6 +839,7 @@ class RentalController extends Controller
 
         $rental = Rental::findOrFail($id); // Find the existing rental by ID
 
+        $rental->package_id = $validatedData['package_id'];
         $rental->total_price = $validatedData['total_price'];
         $rental->payment_status = $validatedData['payment_status'];
         $rental->status = $validatedData['status'];

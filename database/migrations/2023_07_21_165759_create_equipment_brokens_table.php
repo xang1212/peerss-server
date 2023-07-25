@@ -17,6 +17,8 @@ class CreateEquipmentBrokensTable extends Migration
             $table->id();
             $table->unsignedBigInteger('rental_id');
             $table->foreign('rental_id')->references('id')->on('rentals')->onDelete('cascade');
+            $table->unsignedBigInteger('package_rental_id')->nullable();
+            $table->foreign('package_rental_id')->references('id')->on('package_rentals')->onDelete('cascade');
             $table->unsignedBigInteger('equipment_id');
             $table->foreign('equipment_id')->references('id')->on('equipment')->onDelete('cascade');
             $table->string('equipment_name',100);
