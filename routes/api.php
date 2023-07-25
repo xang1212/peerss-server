@@ -61,6 +61,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::post('/food/insert',[FoodController::class,'store']);
     Route::put('/food/update/{id}',[FoodController::class,'update']);
     Route::delete('/food/delete/{id}',[FoodController::class,'destroy']);
+    Route::get('/sel-all-model',[FoodController::class,'all_index']);
 
     //rental 
     Route::post('/rental/insert',[RentalController::class,'store']);

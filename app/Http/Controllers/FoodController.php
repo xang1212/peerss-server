@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipment;
 use App\Models\Food;
+use App\Models\Package;
+use App\Models\Rental;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,6 +20,25 @@ class FoodController extends Controller
     public function index()
     {
         return Food::all();
+    }
+
+    public function all_index()
+    {
+        $equipments = Equipment::all();
+        $foods = Food::all();
+        $rentals = Rental::all();
+        $users = User::all();
+        $packages = Package::all();
+    
+        $allData = [
+            'equipments' => $equipments->toArray(),
+            'foods' => $foods->toArray(),
+            'rentals' => $rentals->toArray(),
+            'users' => $users->toArray(),
+            'packages' => $packages->toArray(),
+        ];
+    
+        return $allData;
     }
 
     /**

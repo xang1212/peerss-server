@@ -32,3 +32,7 @@
 // delete food
     delete http://127.0.0.1:8000/api/food/delete/{id}
     token: yes
+
+// get all model
+    get http://127.0.0.1:8000/api/sel-all-model
+    token: yes
