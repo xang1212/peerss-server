@@ -267,7 +267,7 @@ class UserController extends Controller
         if (!$user || !Hash::check($fields['password'], $user->password)) {
 
             return response([
-                'message' => 'bad creds'
+                'message' => 'ເບີໂທ ຫຼື ລະຫັດບໍ່ຖືກຕ້ອງ'
             ], 401);
         }
 
