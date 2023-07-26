@@ -711,7 +711,8 @@ class RentalController extends Controller
                 'package_id' => $packageEquipment->package_id,
                 'equipment_id' => $packageEquipment->equipment_id,
                 'equipment_name' => Equipment::find($packageEquipment->equipment_id)->name,
-                'equipment_images' => Equipment::find($packageEquipment->equipment_id)->images,
+                'unit' => Equipment::find($packageEquipment->equipment_id)->unit,
+                'images' => Equipment::find($packageEquipment->equipment_id)->images,
                 'package_qty' => $packageEquipment->package_qty,
             ];
         });
