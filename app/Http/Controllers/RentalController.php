@@ -694,18 +694,44 @@ class RentalController extends Controller
     {
         $rental = Rental::find($id);
     
+        if (!$rental) {
+            return response()->json(['message' => 'Rental not found'], 404);
+        }
+    
         $customer = User::find($rental->user_id);
         $package = Package::find($rental->package_id);
     
-        $rentalDetails = RentalDetail::where('rental_id', $id)->get();
+        // Fetch associated package equipments and package foods
+        $packageEquipments = PackageEquipment::where('package_id', $rental->package_id)->get();
+        $packageFoods = PackageFood::where('package_id', $rental->package_id)->get();
     
+        $formattedPackageEquipments = $packageEquipments->map(function ($packageEquipment) {
+            return [
+                'id' => $packageEquipment->id,
+                'package_id' => $packageEquipment->package_id,
+                'equipment_id' => $packageEquipment->equipment_id,
+                'equipment_name' => Equipment::find($packageEquipment->equipment_id)->name,
+                'equipment_images' => Equipment::find($packageEquipment->equipment_id)->images,
+                'package_qty' => $packageEquipment->package_qty,
+            ];
+        });
+    
+        $formattedPackageFoods = $packageFoods->map(function ($packageFood) {
+            return [
+                'id' => $packageFood->id,
+                'package_id' => $packageFood->package_id,
+                'food_id' => $packageFood->food_id,
+                'food_name' => Food::find($packageFood->food_id)->name,
+                'food_image' => Food::find($packageFood->food_id)->image,
+            ];
+        });
+    
+        $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
         $equipmentIds = $rentalDetails->pluck('equipment_id');
-    
         $equipments = Equipment::whereIn('id', $equipmentIds)->get();
     
         $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
             $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
-    
             return [
                 'id' => $equipment->id,
                 'name' => $equipment->name,
@@ -720,25 +746,6 @@ class RentalController extends Controller
                 'updated_at' => $equipment->updated_at,
             ];
         });
-
-        $equipmentBrokens = EquipmentBroken::where('rental_id', $id)->get();
-
-        $formattedEquipmentBrokens = $equipmentBrokens->map(function ($equipmentBroken) {
-            $equipment = Equipment::find($equipmentBroken->equipment_id);
-    
-            return [
-                'id' => $equipmentBroken->id,
-                'rental_id' => $equipmentBroken->rental_id,
-                'equipment_id' => $equipmentBroken->equipment_id,
-                'equipment_name' => $equipment->name,
-                'equipment_images' => $equipment->images,
-                'equipment_unit' => $equipment->unit,
-                'broken_qty' => $equipmentBroken->broken_qty,
-                'broken_price' => $equipmentBroken->broken_price,
-                'created_at' => $equipmentBroken->created_at,
-                'updated_at' => $equipmentBroken->updated_at,
-            ];
-        });
     
         $output = [
             'id' => $rental->id,
@@ -746,6 +753,8 @@ class RentalController extends Controller
             'customer' => $customer,
             'package_id' => $rental->package_id,
             'package' => $package,
+            'package_equipments' => $formattedPackageEquipments,
+            'package_foods' => $formattedPackageFoods,
             'payment_status' => $rental->payment_status,
             'status' => $rental->status,
             'address' => $rental->address,
@@ -759,14 +768,13 @@ class RentalController extends Controller
             'receipt_half_image' => $rental->receipt_half_image,
             'receipt_full_image' => $rental->receipt_full_image,
             'equipments' => $formattedEquipments,
-            'equipment_brokens' => $formattedEquipmentBrokens,
             'created_at' => $rental->created_at,
             'updated_at' => $rental->updated_at,
         ];
     
         return response()->json($output);
-
     }
+    
 
 
     /**
