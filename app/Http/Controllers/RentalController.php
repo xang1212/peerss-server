@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\EquipmentBroken;
+use App\Models\Food;
 use App\Models\Package;
+use App\Models\PackageEquipment;
+use App\Models\PackageFood;
 use App\Models\Rental;
 use App\Models\RentalDetail;
 use App\Models\User;
@@ -27,18 +30,39 @@ class RentalController extends Controller
     
         $output = $rentals->map(function ($rental) {
             $customer = User::find($rental->user_id);
-
             $package = Package::find($rental->package_id);
     
+            // Fetch associated package equipments and package foods
+            $packageEquipments = PackageEquipment::where('package_id', $rental->package_id)->get();
+            $packageFoods = PackageFood::where('package_id', $rental->package_id)->get();
+    
+            $formattedPackageEquipments = $packageEquipments->map(function ($packageEquipment) {
+                return [
+                    'id' => $packageEquipment->id,
+                    'package_id' => $packageEquipment->package_id,
+                    'equipment_id' => $packageEquipment->equipment_id,
+                    'equipment_name' => Equipment::find($packageEquipment->equipment_id)->name,
+                    'equipment_images' => Equipment::find($packageEquipment->equipment_id)->images,
+                    'package_qty' => $packageEquipment->package_qty,
+                ];
+            });
+    
+            $formattedPackageFoods = $packageFoods->map(function ($packageFood) {
+                return [
+                    'id' => $packageFood->id,
+                    'package_id' => $packageFood->package_id,
+                    'food_id' => $packageFood->food_id,
+                    'food_name' => Food::find($packageFood->food_id)->name,
+                    'food_image' => Food::find($packageFood->food_id)->image,
+                ];
+            });
+    
             $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
-    
             $equipmentIds = $rentalDetails->pluck('equipment_id');
-    
             $equipments = Equipment::whereIn('id', $equipmentIds)->get();
     
             $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
                 $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
-    
                 return [
                     'id' => $equipment->id,
                     'name' => $equipment->name,
@@ -60,6 +84,8 @@ class RentalController extends Controller
                 'customer' => $customer,
                 'package_id' => $rental->package_id,
                 'package' => $package,
+                'package_equipments' => $formattedPackageEquipments,
+                'package_foods' => $formattedPackageFoods,
                 'payment_status' => $rental->payment_status,
                 'status' => $rental->status,
                 'address' => $rental->address,
@@ -79,8 +105,8 @@ class RentalController extends Controller
         });
     
         return response()->json($output);
-
     }
+    
 
     public function getRentalsByUserId($user_id)
     {
@@ -486,7 +512,7 @@ class RentalController extends Controller
 
             $rental = [
                 'user_id' => $user->id,
-                'package_id' => $validatedData['package_id'],
+                'package_id' => optional($validatedData)['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
                 'type' => $validatedData['type'],
@@ -547,7 +573,7 @@ class RentalController extends Controller
 
             $rental = [
                 'user_id' => $user->id,
-                'package_id' => $validatedData['package_id'],
+                'package_id' => optional($validatedData)['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
                 'type' => $validatedData['type'],
@@ -620,7 +646,7 @@ class RentalController extends Controller
 
             $rental = [
                 'user_id' => $validatedData['user_id'],
-                'package_id' => $validatedData['package_id'],
+                'package_id' => optional($validatedData)['package_id'],
                 'total_price' => $validatedData['total_price'],
                 'address' => $validatedData['address'],
                 'type' => $validatedData['type'],
