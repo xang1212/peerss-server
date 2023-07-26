@@ -170,6 +170,7 @@ class PackageController extends Controller
                 'package_qty' => $packageEquipment->package_qty,
                 'price' => $equipment->price,
                 'broken_price' => $equipment->broken_price,
+                'price' => $equipment->price,
                 'unit' => $equipment->unit,
                 'images' => $equipment->images,
                 'created_at' => $equipment->created_at,
