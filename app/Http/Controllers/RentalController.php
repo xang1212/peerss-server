@@ -538,10 +538,10 @@ class RentalController extends Controller
                 'receipt_half_image' => 'required',
                 'receipt_full_image' => 'nullable',
                 'total_broken_price' => 'numeric|nullable',
-                'rental_details' => 'required|array',
-                'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-                'rental_details.*.rental_qty' => 'required',
-                'rental_details.*.price' => 'required',
+                'rental_details' => 'nullable|array',
+                'rental_details.*.equipment_id' => 'nullable|exists:equipment,id',
+                'rental_details.*.rental_qty' => 'nullable',
+                'rental_details.*.price' => 'nullable',
             ]);
     
 
@@ -610,10 +610,10 @@ class RentalController extends Controller
                 'receipt_half_image' => 'required',
                 'receipt_full_image' => 'nullable',
                 'total_broken_price' => 'numeric',
-                'rental_details' => 'required|array',
-                'rental_details.*.equipment_id' => 'required|exists:equipment,id',
-                'rental_details.*.rental_qty' => 'required',
-                'rental_details.*.price' => 'required',
+                'rental_details' => 'nullable|array',
+                'rental_details.*.equipment_id' => 'nullable|exists:equipment,id',
+                'rental_details.*.rental_qty' => 'nullable',
+                'rental_details.*.price' => 'nullable',
             ]);
     
 
