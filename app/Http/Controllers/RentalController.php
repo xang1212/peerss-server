@@ -572,6 +572,7 @@ class RentalController extends Controller
            
             $rental = Rental::create($rental);
 
+            if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
             foreach ($rentalDetails as $detail) {
                 $rentalDetails = new RentalDetail([
@@ -581,7 +582,7 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
-
+                }
             }
 
             DB::commit();
@@ -634,6 +635,7 @@ class RentalController extends Controller
            
             $rental = Rental::create($rental);
 
+            if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
             foreach ($rentalDetails as $detail) {
                 $rentalDetails = new RentalDetail([
@@ -643,7 +645,7 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
-
+                }
             }
 
             DB::commit();
