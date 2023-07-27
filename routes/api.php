@@ -53,6 +53,7 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
     Route::delete('/user/delete/{id}',[UserController::class,'destroy']);
 
     //Equipment 
+    Route::get('/equipment/sel-all-brokens',[EquipmentController::class,'sel_equipment_broken']);
     Route::post('/equipment/insert',[EquipmentController::class,'store']);
     Route::put('/equipment/update/{id}',[EquipmentController::class,'update']);
     Route::delete('/equipment/delete/{id}',[EquipmentController::class,'destroy']);

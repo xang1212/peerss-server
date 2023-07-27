@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
+use App\Models\EquipmentBroken;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
@@ -22,6 +23,27 @@ class EquipmentController extends Controller
         return Equipment::find($id);
     }
 
+    public function sel_equipment_broken()
+    {
+        $equipmentBroken = EquipmentBroken::all();
+
+        $formattedBrokenEquipments = $equipmentBroken->map(function ($brokenEquipment) {
+            return [
+                'id' => $brokenEquipment->id,
+                'rental_id' => $brokenEquipment->rental_id,
+                'package_rental_id' => $brokenEquipment->package_rental_id,
+                'equipment_id' => $brokenEquipment->equipment_id,
+                'equipment_name' => $brokenEquipment->equipment_name,
+                'images' => Equipment::find($brokenEquipment->equipment_id)->images,
+                'broken_qty' => $brokenEquipment->broken_qty,
+                'broken_price' => $brokenEquipment->broken_price,
+                'created_at' => $brokenEquipment->created_at,
+                'updated_at' => $brokenEquipment->updated_at,
+            ];
+        });
+
+        return response()->json($formattedBrokenEquipments);
+    }
 
 
     /**
