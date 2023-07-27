@@ -883,12 +883,14 @@ class RentalController extends Controller
             ];
         });
     
+        // Fetch all rental details and equipment information
         $rentalDetails = RentalDetail::where('rental_id', $rental->id)->get();
         $equipmentIds = $rentalDetails->pluck('equipment_id');
         $equipments = Equipment::whereIn('id', $equipmentIds)->get();
     
+        // Map all rented equipment
         $formattedEquipments = $equipments->map(function ($equipment) use ($rentalDetails) {
-            $rentalDetail = $rentalDetails->firstWhere('equipment_id', $equipment->id);
+            $rentalDetail = $rentalDetails->where('equipment_id', $equipment->id)->first();
             return [
                 'id' => $equipment->id,
                 'name' => $equipment->name,
@@ -903,18 +905,21 @@ class RentalController extends Controller
                 'updated_at' => $equipment->updated_at,
             ];
         });
-
-        $EquipmentBrokens = EquipmentBroken::where('rental_id', $rental->id)->get();
-        $brokenIds = $EquipmentBrokens->pluck('equipment_id');
-        $equipments = Equipment::whereIn('id', $brokenIds)->get();
-        $formattedEquipments = $equipments->map(function ($equipment) use ($EquipmentBrokens) {
-            $rentalDetail = $EquipmentBrokens->firstWhere('equipment_id', $equipment->id);
+    
+        // Fetch all broken equipment information
+        $equipmentBrokens = EquipmentBroken::where('rental_id', $rental->id)->get();
+        $brokenEquipmentIds = $equipmentBrokens->pluck('equipment_id');
+        $brokenEquipments = Equipment::whereIn('id', $brokenEquipmentIds)->get();
+    
+        // Map all broken equipment
+        $formattedBrokenEquipments = $brokenEquipments->map(function ($equipment) use ($equipmentBrokens) {
+            $equipmentBroken = $equipmentBrokens->where('equipment_id', $equipment->id)->first();
             return [
                 'id' => $equipment->id,
                 'name' => $equipment->name,
                 'category' => $equipment->category,
                 'description' => $equipment->desc,
-                'broken_qty' => $rentalDetail->broken_qty,
+                'broken_qty' => $equipmentBroken->broken_qty,
                 'broken_price' => $equipment->broken_price,
                 'unit' => $equipment->unit,
                 'images' => $equipment->images,
@@ -944,13 +949,14 @@ class RentalController extends Controller
             'receipt_half_image' => $rental->receipt_half_image,
             'receipt_full_image' => $rental->receipt_full_image,
             'equipments' => $formattedEquipments,
-            'broken_equipments' => $EquipmentBrokens,
+            'broken_equipments' => $formattedBrokenEquipments,
             'created_at' => $rental->created_at,
             'updated_at' => $rental->updated_at,
         ];
     
         return response()->json($output);
     }
+    
     
 
 
