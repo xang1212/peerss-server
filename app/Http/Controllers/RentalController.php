@@ -915,10 +915,11 @@ class RentalController extends Controller
         $formattedBrokenEquipments = $brokenEquipments->map(function ($equipment) use ($equipmentBrokens) {
             $equipmentBroken = $equipmentBrokens->where('equipment_id', $equipment->id)->first();
             return [
+                'id' => $equipmentBroken->id,
                 'equipment_id' => $equipment->id,
                 'equipment_name' => $equipment->name,
                 'category' => $equipment->category,
-                'des' => $equipment->desc,
+                'desc' => $equipment->desc,
                 'broken_qty' => $equipmentBroken->broken_qty,
                 'broken_price' => $equipment->broken_price,
                 'unit' => $equipment->unit,
