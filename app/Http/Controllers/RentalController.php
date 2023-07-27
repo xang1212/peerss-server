@@ -903,6 +903,25 @@ class RentalController extends Controller
                 'updated_at' => $equipment->updated_at,
             ];
         });
+
+        $EquipmentBrokens = EquipmentBroken::where('rental_id', $rental->id)->get();
+        $brokenIds = $EquipmentBrokens->pluck('equipment_id');
+        $equipments = Equipment::whereIn('id', $brokenIds)->get();
+        $formattedEquipments = $equipments->map(function ($equipment) use ($EquipmentBrokens) {
+            $rentalDetail = $EquipmentBrokens->firstWhere('equipment_id', $equipment->id);
+            return [
+                'id' => $equipment->id,
+                'name' => $equipment->name,
+                'category' => $equipment->category,
+                'description' => $equipment->desc,
+                'broken_qty' => $rentalDetail->broken_qty,
+                'broken_price' => $equipment->broken_price,
+                'unit' => $equipment->unit,
+                'images' => $equipment->images,
+                'created_at' => $equipment->created_at,
+                'updated_at' => $equipment->updated_at,
+            ];
+        });
     
         $output = [
             'id' => $rental->id,
@@ -925,6 +944,7 @@ class RentalController extends Controller
             'receipt_half_image' => $rental->receipt_half_image,
             'receipt_full_image' => $rental->receipt_full_image,
             'equipments' => $formattedEquipments,
+            'broken_equipments' => $EquipmentBrokens,
             'created_at' => $rental->created_at,
             'updated_at' => $rental->updated_at,
         ];
@@ -1032,7 +1052,7 @@ class RentalController extends Controller
 
         $rental = Rental::findOrFail($id); // Find the existing rental by ID
 
-        $rental->package_id = $validatedData['package_id'];
+        $rental->package_id = optional($validatedData)['package_id'];
         $rental->total_price = $validatedData['total_price'];
         $rental->payment_status = $validatedData['payment_status'];
         $rental->status = $validatedData['status'];
