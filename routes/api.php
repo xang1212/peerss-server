@@ -91,8 +91,8 @@ Route::group(['middleware'=>['auth:sanctum']], function () {
 
     //package 
     Route::post('/package/insert',[PackageController::class,'store']);
-    Route::get('/package/sel-all',[PackageController::class,'index']);
-    Route::get('/package/sel-one/{id}',[PackageController::class,'show']);
+    // Route::get('/package/sel-all',[PackageController::class,'index']);
+    // Route::get('/package/sel-one/{id}',[PackageController::class,'show']);
     Route::get('/package/by-food/{foodId}', [PackageController::class, 'getPackagesByFoodId']);
     Route::put('/package/update/{id}',[PackageController::class,'update']);
     Route::delete('/package/delete/{id}',[PackageController::class,'destroy']);
