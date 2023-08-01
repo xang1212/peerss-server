@@ -1111,6 +1111,17 @@ class RentalController extends Controller
             $rental->receipt_full_image = $file;
         }
 
+        if ($request['package_id']) {
+            // Code to handle package rental
+            $package = Package::findOrFail($request->package_id);
+            $package->package_equipment()->each(function ($packageEquipment) {
+                $equipment = $packageEquipment->equipment;
+                if ($equipment) {
+                    $equipment->increment('qty', $packageEquipment->package_qty);
+                }
+            });
+        }
+
         $rental->save(); // Update the rental information
 
 
@@ -1127,6 +1138,7 @@ class RentalController extends Controller
                 'price' => $detail['price']
             ]);
             $rentalDetail->save();
+            Equipment::where('id', $detail['equipment_id'])->increment('qty', $detail['rental_qty']);
         }
     }
 
@@ -1144,6 +1156,7 @@ class RentalController extends Controller
                     'broken_price' => $detail['broken_price']
                 ]);
                 $EquipmentBroken->save();
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['rental_qty']);
             }
             $rental->load('rental_detail', 'equipment_broken');
         }
