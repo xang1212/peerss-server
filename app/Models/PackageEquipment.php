@@ -15,4 +15,9 @@ class PackageEquipment extends Model
     {
         return $this->belongsTo(Package::class);
     }
+
+    public function equipment()
+    {
+        return $this->belongsTo(Equipment::class);
+    }
 }

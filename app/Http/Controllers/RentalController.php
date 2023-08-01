@@ -665,6 +665,7 @@ class RentalController extends Controller
             ]);
     
 
+
             $rental = [
                 'user_id' => $user->id,
                 'package_id' => optional($validatedData)['package_id'],
@@ -674,6 +675,15 @@ class RentalController extends Controller
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
+            if($request->package_id){
+            $package = Package::findOrFail($request->package_id);
+            $package->package_equipment()->each(function ($packageEquipment) {
+                $equipment = $packageEquipment->equipment;
+                if ($equipment) {
+                    $equipment->decrement('qty', $packageEquipment->package_qty);
+                }
+            });}
+
 
             if($request->receipt_half_image){
                 $file = Storage::disk('public')->put('images', $request->receipt_half_image);
@@ -736,6 +746,14 @@ class RentalController extends Controller
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
+            if($request->package_id){
+                $package = Package::findOrFail($request->package_id);
+                $package->package_equipment()->each(function ($packageEquipment) {
+                    $equipment = $packageEquipment->equipment;
+                    if ($equipment) {
+                        $equipment->decrement('qty', $packageEquipment->package_qty);
+                    }
+                });}
 
             if ($request->receipt_half_image) {
                 // Handle the base64 image data
@@ -811,6 +829,14 @@ class RentalController extends Controller
                 'shipping_date' => $validatedData['shipping_date'],
                 'picking_date' => $validatedData['picking_date'],
             ];
+            if($request->package_id){
+                $package = Package::findOrFail($request->package_id);
+                $package->package_equipment()->each(function ($packageEquipment) {
+                    $equipment = $packageEquipment->equipment;
+                    if ($equipment) {
+                        $equipment->decrement('qty', $packageEquipment->package_qty);
+                    }
+                });}
 
             if($request->receipt_half_image){
                 $file = Storage::disk('public')->put('images', $request->receipt_half_image);
