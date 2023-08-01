@@ -692,11 +692,12 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['rental_qty']);
                 }
             }
 
             DB::commit();
-            return response()->json(['message' => 'ການເຊົ່າສຳເລັດໝ ກະລຸນາລໍຖ້າພະນັກງານອະນຸມັດ', 'rental' => $rental]);
+            return response()->json(['message' => 'ການເຊົ່າສຳເລັດ ກະລຸນາລໍຖ້າພະນັກງານອະນຸມັດ', 'rental' => $rental]);
         }catch(Throwable $th){
             DB::rollBack();
             throw $th;
@@ -752,6 +753,7 @@ class RentalController extends Controller
             }
            
             $rental = Rental::create($rental);
+            
 
             if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
@@ -763,6 +765,7 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['rental_qty']);
                 }
             }
 
@@ -826,6 +829,7 @@ class RentalController extends Controller
                     'price' => $detail['price']
                 ]);
                 $rentalDetails->save();
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['rental_qty']);
                 }
             }
 
