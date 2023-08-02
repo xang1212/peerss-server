@@ -1156,7 +1156,7 @@ class RentalController extends Controller
                     'broken_price' => $detail['broken_price']
                 ]);
                 $EquipmentBroken->save();
-                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['rental_qty']);
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['broken_qty']);
             }
             $rental->load('rental_detail', 'equipment_broken');
         }
