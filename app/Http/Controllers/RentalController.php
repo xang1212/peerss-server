@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+
 use Throwable;
 
 class RentalController extends Controller
@@ -771,7 +773,25 @@ class RentalController extends Controller
             }
            
             $rental = Rental::create($rental);
-            
+
+             // Now you can access the user's properties, for example, 'phone_number':
+            $customerPhoneNumber = '+85620' . $user->phone_number;
+            $customerName =  $user->first_name . " " . $user->last_name;
+            $ownerPhoneNumber = '+8562078339191';
+            $id = $rental->id;
+            $format_status = GetRentalStatusInLao("PENDING");
+
+            $jsonPayload = [
+                'contacts' => [$customerPhoneNumber, $ownerPhoneNumber], // Assuming you have only one contact for each rental
+                'messages' => [
+                    "🏪 ຂໍ້ຄວາມຈາກຮ້ານປະລະມີ\n🥰 ເຖິງລູກຄ້າ: $customerName \nອໍເດີ້ຂອງທ່ານ: $format_status\nເລກທີ່ອ້າງອີງການເຊົ່າ: $id",
+                    "📢 ມີອໍເດີ້ເຂົ້າໃໝ່\nຈາກລູກຄ້າ: $customerName\nເບີໂທ: $customerPhoneNumber\nເລກທີ່ອ້າງອີງການເຊົ່າ: $id\nກະລຸນາກວດສອບຂໍ້ມູນການເຊົ່າ!",
+                ],
+            ];
+
+            // Send the HTTP POST request using the Http facade (Guzzle)
+            $responseSendNoti = Http::post('http://127.0.0.1:3000/send-message', $jsonPayload);
+
 
             if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
@@ -844,6 +864,24 @@ class RentalController extends Controller
             }
            
             $rental = Rental::create($rental);
+
+            $user = User::where('id', $request->user_id)->first();
+            $customerPhoneNumber = '+85620' . $user->phone_number;
+            $customerName =  $user->first_name . " " . $user->last_name;
+            $ownerPhoneNumber = '+8562078339191';
+            $id = $rental->id;
+            $format_status = GetRentalStatusInLao("PENDING");
+
+            $jsonPayload = [
+                'contacts' => [$customerPhoneNumber, $ownerPhoneNumber], // Assuming you have only one contact for each rental
+                'messages' => [
+                    "🏪 ຂໍ້ຄວາມຈາກຮ້ານປະລະມີ\n🥰 ເຖິງລູກຄ້າ: $customerName \nອໍເດີ້ຂອງທ່ານ: $format_status\nເລກທີ່ອ້າງອີງການເຊົ່າ: $id",
+                    "📢 ມີອໍເດີ້ເຂົ້າໃໝ່\nຈາກລູກຄ້າ: $customerName\nເບີໂທ: $customerPhoneNumber\nເລກທີ່ອ້າງອີງການເຊົ່າ: $id\nກະລຸນາກວດສອບຂໍ້ມູນການເຊົ່າ!",
+                ],
+            ];
+
+            // Send the HTTP POST request using the Http facade (Guzzle)
+            $responseSendNoti = Http::post('http://127.0.0.1:3000/send-message', $jsonPayload);
 
             if (array_key_exists('rental_details', $validatedData)) {
             $rentalDetails = $validatedData['rental_details'];
@@ -1181,12 +1219,53 @@ public function update_status(Request $request, $id)
     ]);
 
     $status = [
-        'status' => $request ->status,
+        'status' => $request->status,
     ];
-    $statusInst = Rental::find($id);
 
+    $statusInst = Rental::find($id);
     $statusInst->update($status);
-    return $status;
+
+    $user = User::find($statusInst->user_id);
+
+    if (!$user) {
+        return response()->json(['error' => 'User not found for the rental'], 404);
+    }
+// Assuming you have defined the 'user' relationship in the Rental model
+
+    // Now you can access the user's properties, for example, 'phone_number':
+    $customerPhoneNumber = '+85620' . $user->phone_number;
+    $customerName =  $user->first_name . " " . $user->last_name;
+    $ownerPhoneNumber = '+8562078339191';
+    $id = $statusInst->id;
+    $total_price = number_format($statusInst->total_price);
+    $format_status = GetRentalStatusInLao($request->status);
+    $outtro = "";
+    if($request->status == "APPROVED"){
+        $outtro = "\nແລ້ວພວກຈະຕິດຕໍ່ກັບເພື່ອສົ່ງເຄື່ອງໄວໆນີ້!";
+    }
+
+    $jsonPayload = [
+        'contacts' => [$customerPhoneNumber], // Assuming you have only one contact for each rental
+        'messages' => [
+            "🏪 ຂໍ້ຄວາມຈາກຮ້ານປະລະມີ\n🥰 ເຖິງລູກຄ້າ: $customerName \nອໍເດີ້ຂອງທ່ານ: $format_status\nເລກທີ່ອ້າງອີງການເຊົ່າ: $id $outtro",
+        ],
+    ];
+
+    // Send the HTTP POST request using the Http facade (Guzzle)
+    $response = Http::post('http://127.0.0.1:3000/send-message', $jsonPayload);
+
+    // Check for errors in the response
+    if ($response->failed()) {
+        // Handle the error appropriately
+        return response()->json(['error' => $response->clientError()], $response->status());
+    }
+
+    // Get the response body as an array (assuming the server returns JSON)
+    $responseData = $response->json();
+    // You can handle the response data as needed
+
+    // Return a success response if needed
+    return response()->json(['message' => 'Messages sent successfully']);
 }
 
 public function update_shipping(Request $request, $id)
@@ -1317,5 +1396,36 @@ public function update_picking(Request $request, $id)
     {
         return EquipmentBroken::destroy($id);
     }
+}
+
+function GetRentalStatusInLao($status) {
+    $rentalStatusEnum = [
+        [
+            'status_en' => 'PENDING',
+            'status_lo' => 'ລໍຖ້າກວດສອບ ⌛',
+        ],
+        [
+            'status_en' => 'APPROVED',
+            'status_lo' => 'ອະນຸມັດແລ້ວ ✅',
+        ],
+        [
+            'status_en' => 'DENIED',
+            'status_lo' => 'ຖືກປະຕິເສດ ❌',
+        ],
+        [
+            'status_en' => 'CANCEL',
+            'status_lo' => 'ໄດ້ຍົກເລີກແລ້ວ ✖️',
+        ],
+    ];
+
+    $matchingStatus = array_filter($rentalStatusEnum, function ($enum) use ($status) {
+        return strtoupper($enum['status_en']) === strtoupper($status);
+    });
+
+    if (count($matchingStatus) > 0) {
+        return reset($matchingStatus)['status_lo'];
+    }
+
+    return "";
 }
  
