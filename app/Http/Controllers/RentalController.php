@@ -1149,16 +1149,6 @@ class RentalController extends Controller
             $rental->receipt_full_image = $file;
         }
 
-        if ($request['package_id']) {
-            // Code to handle package rental
-            $package = Package::findOrFail($request->package_id);
-            $package->package_equipment()->each(function ($packageEquipment) {
-                $equipment = $packageEquipment->equipment;
-                if ($equipment) {
-                    $equipment->increment('qty', $packageEquipment->package_qty);
-                }
-            });
-        }
 
         $rental->save(); // Update the rental information
 
@@ -1176,7 +1166,6 @@ class RentalController extends Controller
                 'price' => $detail['price']
             ]);
             $rentalDetail->save();
-            Equipment::where('id', $detail['equipment_id'])->increment('qty', $detail['rental_qty']);
         }
     }
 
@@ -1285,17 +1274,119 @@ public function update_shipping(Request $request, $id)
 
 public function update_picking(Request $request, $id)
 {
-    $request->validate([
-        'is_picking' => 'required|string',
-    ]);
+    DB::beginTransaction();
+    try {
+        //$user = Auth::user(); // get the authenticated user
 
-    $picking = [
-        'is_picking' => $request ->is_picking,
-    ];
-    $pickingInst = Rental::find($id);
+        $validatedData = $request->validate([
+            'package_id' => 'nullable|exists:packages,id',
+            'total_price' => 'required|numeric',
+            'payment_status' => 'nullable',
+            'status' => 'nullable',
+            'address' => 'required|string',
+            'is_shipping' => 'nullable',
+            'shipping_date' => 'required',
+            'is_picking' => 'nullable',
+            'picking_date' => 'required',
+            'type' => 'nullable',
+            'receipt_half_image' => 'nullable',
+            'receipt_full_image' => 'nullable',
+            'total_broken_price' => 'numeric|nullable',
+            'rental_details' => 'nullable|array',
+            'rental_details.*.equipment_id' => 'nullable|exists:equipment,id',
+            'rental_details.*.rental_qty' => 'nullable',
+            'rental_details.*.price' => 'nullable',
+            'equipment_brokens' => 'nullable|array',
+            'equipment_brokens.*.equipment_id' => 'nullable|exists:equipment,id',
+            'equipment_brokens.*.equipment_name' => 'nullable',
+            'equipment_brokens.*.broken_qty' => 'nullable',
+            'equipment_brokens.*.broken_price' => 'nullable',
+        ]);
 
-    $pickingInst->update($picking);
-    return $picking;
+        $rental = Rental::findOrFail($id); // Find the existing rental by ID
+
+        $rental->package_id = optional($validatedData)['package_id'];
+        $rental->total_price = $validatedData['total_price'];
+        $rental->payment_status = $validatedData['payment_status'];
+        $rental->status = $validatedData['status'];
+        $rental->address = $validatedData['address'];
+        $rental->is_shipping = $validatedData['is_shipping'];
+        $rental->shipping_date = $validatedData['shipping_date'];
+        $rental->is_picking = $validatedData['is_picking'];
+        $rental->picking_date = $validatedData['picking_date'];
+        $rental->type = $validatedData['type'];
+        $rental->total_broken_price = $validatedData['total_broken_price'];
+
+        if ($request->hasFile('receipt_half_image')) {
+            $file = Storage::disk('public')->put('images', $request->file('receipt_half_image'));
+            $rental->receipt_half_image = $file;
+        }
+
+        if ($request->hasFile('receipt_full_image')) {
+            $file = Storage::disk('public')->put('images', $request->file('receipt_full_image'));
+            $rental->receipt_full_image = $file;
+        }
+
+        if ($request['package_id']) {
+            // Code to handle package rental
+            $package = Package::findOrFail($request->package_id);
+            $package->package_equipment()->each(function ($packageEquipment) {
+                $equipment = $packageEquipment->equipment;
+                if ($equipment) {
+                    $equipment->increment('qty', $packageEquipment->package_qty);
+                }
+            });
+        }
+
+        $rental->save(); // Update the rental information
+
+
+        if (array_key_exists('rental_details', $validatedData)) {
+        // Delete existing rental details for this rental
+        RentalDetail::where('rental_id', $rental->id)->delete();
+
+        $rentalDetails = $validatedData['rental_details'];
+        foreach ($rentalDetails as $detail) {
+            $rentalDetail = new RentalDetail([
+                'rental_id' => $rental->id,
+                'equipment_id' => $detail["equipment_id"],
+                'rental_qty' => $detail['rental_qty'],
+                'price' => $detail['price']
+            ]);
+            $rentalDetail->save();
+            Equipment::where('id', $detail['equipment_id'])->increment('qty', $detail['rental_qty']);
+        }
+    }
+
+        if (array_key_exists('equipment_brokens', $validatedData)) {
+            // Delete existing equipment brokens for this rental
+            EquipmentBroken::where('rental_id', $rental->id)->delete();
+
+            $EquipmentBrokens = $validatedData['equipment_brokens'];
+            foreach ($EquipmentBrokens as $detail) {
+                $EquipmentBroken = new EquipmentBroken([
+                    'rental_id' => $rental->id,
+                    'equipment_id' => $detail["equipment_id"],
+                    'equipment_name' => $detail["equipment_name"],
+                    'broken_qty' => $detail['broken_qty'],
+                    'broken_price' => $detail['broken_price']
+                ]);
+                $EquipmentBroken->save();
+                Equipment::where('id', $detail['equipment_id'])->decrement('qty', $detail['broken_qty']);
+            }
+            $rental->load('rental_detail', 'equipment_broken');
+        }
+
+        else {
+            $rental->load('rental_detail'); // Only load the updated rental details
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'rental updated', 'rental' => $rental]);
+    } catch (Throwable $th) {
+        DB::rollBack();
+        throw $th;
+    }
 }
 
     // public function update(Request $request, $id)
